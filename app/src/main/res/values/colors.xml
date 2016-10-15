@@ -22,4 +22,6 @@
     <color name="grey200">#EEEEEE</color>
     <color name="grey100">#F5F5F5</color>
     <color name="grey50">#FAFAFA</color>
+
+    <color name="white90percent">#E5FFFFFF</color>
 </resources>

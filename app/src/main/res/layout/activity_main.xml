@@ -13,13 +13,17 @@
         android:scaleType="centerCrop"
         android:src="@drawable/blurmainbg"/>
 
+    <include layout="@layout/signin_view" />
+    <include layout="@layout/register_view" />
+
     <LinearLayout
+        android:id="@+id/main_btns"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom">
 
         <android.support.v7.widget.AppCompatButton
-            android:id="@+id/signin_btn"
+            android:id="@+id/main_signin_btn"
             android:padding="15dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -31,7 +35,7 @@
             android:textSize="15sp"/>
 
         <android.support.v7.widget.AppCompatButton
-            android:id="@+id/registe_btn"
+            android:id="@+id/main_register_btn"
             android:padding="15dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
