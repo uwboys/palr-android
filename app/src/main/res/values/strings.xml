@@ -1,3 +1,4 @@
 <resources>
-    <string name="app_name">palr-android</string>
+    <string name="app_name">Palr</string>
+    <string name="base_url">http://palrserver.azurewebsites.net</string>
 </resources>

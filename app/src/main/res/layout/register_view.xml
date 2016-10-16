@@ -47,11 +47,14 @@
             android:hint="Password" />
     </android.support.design.widget.TextInputLayout>
 
-    <Button android:id="@+id/register_btn"
+    <android.support.v7.widget.AppCompatButton
+        android:id="@+id/register_btn"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="Register"
         android:background="@color/colorPrimary"
         android:textColor="@color/grey50"
+        android:padding="15dp"
+        android:textSize="15dp"
         android:layout_marginTop="40dp"/>
 </LinearLayout>

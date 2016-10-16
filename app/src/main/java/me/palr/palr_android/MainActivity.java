@@ -1,19 +1,30 @@
 package me.palr.palr_android;
 
 import android.animation.Animator;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatButton;
 import android.view.View;
 import android.view.ViewAnimationUtils;
+import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.Toast;
+
+
+import me.palr.palr_android.api.APIService;
+import me.palr.palr_android.models.LoginPayload;
+import me.palr.palr_android.models.Token;
+import me.palr.palr_android.models.User;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
     LinearLayout registerView;
     LinearLayout signinView;
     LinearLayout mainBtns;
     String curView;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +40,8 @@ public class MainActivity extends AppCompatActivity {
         assert (mainBtns != null);
 
         setupButtons();
+        setupSigninButton();
+        setupRegisterButton();
     }
 
     @Override
@@ -81,4 +94,113 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+
+    private void setupSigninButton() {
+        AppCompatButton signin = (AppCompatButton) findViewById(R.id.signin_btn);
+        assert(signin != null);
+
+        signin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EditText emailInput = (EditText)findViewById(R.id.signin_input_email);
+                EditText passwordInput = (EditText)findViewById(R.id.signin_input_password);
+                assert (emailInput  != null);
+                assert (passwordInput != null);
+                String email = emailInput.getText().toString();
+                String password = passwordInput.getText().toString();
+                if (!email.equals("") && !password.equals("")) {
+                    LoginPayload payload = new LoginPayload(email, password);
+                    makeLoginRequest(payload);
+                }
+            }
+        });
+    }
+
+    private void setupRegisterButton() {
+        AppCompatButton register = (AppCompatButton) findViewById(R.id.register_btn);
+        assert(register != null);
+
+        register.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EditText nameInput = (EditText)findViewById(R.id.register_input_name);
+                EditText emailInput = (EditText)findViewById(R.id.register_input_email);
+                EditText passwordInput = (EditText)findViewById(R.id.register_input_password);
+                assert (nameInput != null);
+                assert (emailInput  != null);
+                assert (passwordInput != null);
+                String name = nameInput.getText().toString();
+                String email = emailInput.getText().toString();
+                String password = passwordInput.getText().toString();
+                if (!email.equals("") && !password.equals("") && !name.equals("")) {
+                    User user = new User(name, email, password);
+                    makeRegisterRequest(user);
+                } else {
+                    Toast.makeText(getApplicationContext(), "All fields must be filled out", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+    }
+
+
+
+    private void makeRegisterRequest(User user) {
+        final PalrApplication app = (PalrApplication) getApplication();
+        APIService service = app.getAPIService();
+
+        Call<Token> createRegisterReq = service.register(user);
+
+        createRegisterReq.enqueue(new Callback<Token>() {
+            @Override
+            public void onResponse(Call<Token> call, Response<Token> response) {
+
+                if (response.body() == null) {
+                    if (response.raw().code() != 200) {
+                        Toast.makeText(getApplicationContext(), "Registration failed! Check all required fields are filled out", Toast.LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(getApplicationContext(), "Registration failed", Toast.LENGTH_LONG).show();
+                    }
+                } else {
+                    Toast.makeText(getApplicationContext(), "Successfully registered", Toast.LENGTH_LONG).show();
+                    app.logUserIn(response.body(), MainActivity.this);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Token> call, Throwable t) {
+                Toast.makeText(getApplicationContext(), "Something went wrong, unable to register", Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private void makeLoginRequest(LoginPayload payload) {
+        final PalrApplication app = (PalrApplication) getApplication();
+        APIService service = app.getAPIService();
+
+        Call<Token> createLoginReq = service.login(payload);
+
+        createLoginReq.enqueue(new Callback<Token>() {
+            @Override
+            public void onResponse(Call<Token> call, Response<Token> response) {
+
+                if (response.body() == null) {
+                    if (response.raw().code() == 401) {
+                        Toast.makeText(getApplicationContext(), "Username or password does not match!", Toast.LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(getApplicationContext(), "Login failed", Toast.LENGTH_LONG).show();
+                    }
+                } else {
+                    Toast.makeText(getApplicationContext(), "Successfully logged in!", Toast.LENGTH_SHORT).show();
+                    app.logUserIn(response.body(), MainActivity.this);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Token> call, Throwable t) {
+                Toast.makeText(getApplicationContext(), "Login failed", Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
 }
