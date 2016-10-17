@@ -5,6 +5,7 @@ import java.util.List;
 import me.palr.palr_android.models.Conversation;
 import me.palr.palr_android.models.LoginPayload;
 import me.palr.palr_android.models.MatchPayload;
+import me.palr.palr_android.models.Message;
 import me.palr.palr_android.models.Token;
 import me.palr.palr_android.models.User;
 import retrofit2.Call;
@@ -32,4 +33,10 @@ public interface APIService {
 
     @GET("conversations")
     Call<List<Conversation>> getConversations();
+
+    @GET("messages")
+    Call<List<Message>> getMessages(@Query("conversationDataId") String conversationDataId);
+
+    @POST("messages")
+    Call<Message> createMessage(@Body Message message);
 }

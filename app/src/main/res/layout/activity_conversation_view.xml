@@ -1,0 +1,58 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fitsSystemWindows="true"
+        tools:context="me.palr.palr_android.ConversationViewActivity"
+        tools:ignore="MergeRootFrame">
+
+        <android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/message_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="100dp"
+            app:layoutManager="LinearLayoutManager"
+            tools:context="me.palr.palr_android.ConversationViewActivity"
+            tools:listitem="@layout/message_item_view"
+            />
+    </android.support.design.widget.CoordinatorLayout>
+
+    <LinearLayout
+    android:id="@+id/conversation_card"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="bottom">
+        <EditText
+            android:id="@+id/message_content_input"
+            android:inputType="textMultiLine"
+            android:layout_height="wrap_content"
+            android:layout_width="fill_parent"
+            android:layout_weight="0.5"
+            android:scrollbars="vertical"
+            android:hint="Say something..."
+            android:padding="10dp"
+            android:background="@android:color/transparent"/>
+
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/message_send_btn"
+            android:padding="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Send"
+            app:backgroundTint="@color/colorPrimary"
+            android:textColor="@color/grey50"
+            android:layout_gravity="bottom"
+            android:textSize="15sp"/>
+    </LinearLayout>
+
+</LinearLayout>
+

@@ -154,13 +154,8 @@ public class MainActivity extends AppCompatActivity {
         createRegisterReq.enqueue(new Callback<Token>() {
             @Override
             public void onResponse(Call<Token> call, Response<Token> response) {
-
-                if (response.body() == null) {
-                    if (response.raw().code() != 200) {
-                        Toast.makeText(getApplicationContext(), "Registration failed! Check all required fields are filled out", Toast.LENGTH_LONG).show();
-                    } else {
-                        Toast.makeText(getApplicationContext(), "Registration failed", Toast.LENGTH_LONG).show();
-                    }
+                if (response.raw().code() != 200) {
+                    Toast.makeText(getApplicationContext(), "Registration failed! Check all required fields are filled out", Toast.LENGTH_LONG).show();
                 } else {
                     Toast.makeText(getApplicationContext(), "Successfully registered", Toast.LENGTH_LONG).show();
                     app.logUserIn(response.body(), MainActivity.this);

@@ -35,7 +35,7 @@ public class PalrApplication extends Application {
     private APIService apiService;
     User currentUser;
 
-    HashMap<String, Conversation> conversations;
+    List<Conversation> conversations;
 
     public void onCreate() {
         super.onCreate();
@@ -91,7 +91,7 @@ public class PalrApplication extends Application {
         return apiService;
     }
 
-    public HashMap<String, Conversation> getConversations() {
+    public List<Conversation> getConversations() {
         return conversations;
     }
 
@@ -99,7 +99,7 @@ public class PalrApplication extends Application {
         return currentUser;
     }
 
-    public void setConversations(HashMap<String, Conversation> conversations) {
+    public void setConversations(List<Conversation> conversations) {
         this.conversations = conversations;
     }
 
@@ -113,7 +113,12 @@ public class PalrApplication extends Application {
                     Toast.makeText(getApplicationContext(), "Response body was null", Toast.LENGTH_LONG).show();
                 } else {
                     currentUser = response.body();
-                    Intent intent = new Intent(activity, MatchActivity.class);
+                    Intent intent;
+                    if (currentUser.isMatched()) {
+                        intent = new Intent(activity, ConversationListActivity.class);
+                    } else {
+                        intent = new Intent(activity, MatchActivity.class);
+                    }
                     activity.startActivity(intent);
                 }
             }
