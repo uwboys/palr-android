@@ -138,11 +138,6 @@ public class ConversationViewActivity extends AppCompatActivity {
                 } else {
                     recyclerView = (RecyclerView) findViewById(R.id.message_list);
                     assert recyclerView != null;
-//
-//                    recyclerView.addItemDecoration(
-//                            new HorizontalDividerItemDecoration.Builder(ConversationViewActivity.this)
-//                                    .build());
-
                     setupRecyclerView(recyclerView, response.body());
                 }
             }

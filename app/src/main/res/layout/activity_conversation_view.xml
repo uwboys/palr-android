@@ -19,7 +19,7 @@
             android:id="@+id/message_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginBottom="100dp"
+            android:layout_marginBottom="80dp"
             app:layoutManager="LinearLayoutManager"
             tools:context="me.palr.palr_android.ConversationViewActivity"
             tools:listitem="@layout/message_item_view"
@@ -40,11 +40,13 @@
             android:scrollbars="vertical"
             android:hint="Say something..."
             android:padding="10dp"
+            android:paddingBottom="0dp"
             android:background="@android:color/transparent"/>
 
         <android.support.v7.widget.AppCompatButton
             android:id="@+id/message_send_btn"
             android:padding="10dp"
+            android:paddingBottom="0dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Send"
