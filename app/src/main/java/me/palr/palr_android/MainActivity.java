@@ -26,6 +26,13 @@ public class MainActivity extends AppCompatActivity {
     LinearLayout mainBtns;
     String curView;
 
+    EditText signInEmail;
+    EditText signInPass;
+
+    EditText registerName;
+    EditText registerEmail;
+    EditText registerPass;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,6 +57,14 @@ public class MainActivity extends AppCompatActivity {
             signinView.setVisibility(View.INVISIBLE);
             registerView.setVisibility(View.INVISIBLE);
             mainBtns.setVisibility(View.VISIBLE);
+
+            // Zero out fields
+            if (this.curView.equals("SIGNIN")) {
+                signInEmail.setText("");
+                signInPass.setText("");
+            }
+
+            this.curView = "MAIN";
         } else {
             super.onBackPressed();
         }
@@ -74,6 +89,12 @@ public class MainActivity extends AppCompatActivity {
                 signinView.setVisibility(View.VISIBLE);
                 mainBtns.setVisibility(View.INVISIBLE);
                 anim.start();
+
+                signInEmail = (EditText)findViewById(R.id.signin_input_email);
+                signInPass = (EditText)findViewById(R.id.signin_input_password);
+                assert (signInEmail != null);
+                assert (signInPass != null);
+
                 MainActivity.this.curView = "SIGNIN";
             }
         });
@@ -103,12 +124,8 @@ public class MainActivity extends AppCompatActivity {
         signin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EditText emailInput = (EditText)findViewById(R.id.signin_input_email);
-                EditText passwordInput = (EditText)findViewById(R.id.signin_input_password);
-                assert (emailInput  != null);
-                assert (passwordInput != null);
-                String email = emailInput.getText().toString();
-                String password = passwordInput.getText().toString();
+                String email = signInEmail.getText().toString();
+                String password = signInPass.getText().toString();
                 if (!email.equals("") && !password.equals("")) {
                     LoginPayload payload = new LoginPayload(email, password);
                     makeLoginRequest(payload);
@@ -142,8 +159,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
-
 
     private void makeRegisterRequest(User user) {
         final PalrApplication app = (PalrApplication) getApplication();
