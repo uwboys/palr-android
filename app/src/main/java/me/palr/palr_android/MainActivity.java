@@ -62,8 +62,11 @@ public class MainActivity extends AppCompatActivity {
             if (this.curView.equals("SIGNIN")) {
                 signInEmail.setText("");
                 signInPass.setText("");
+            } else if (this.curView.equals("REGISTER")) {
+                registerEmail.setText("");
+                registerName.setText("");
+                registerPass.setText("");
             }
-
             this.curView = "MAIN";
         } else {
             super.onBackPressed();
@@ -111,6 +114,14 @@ public class MainActivity extends AppCompatActivity {
                 registerView.setVisibility(View.VISIBLE);
                 mainBtns.setVisibility(View.INVISIBLE);
                 anim.start();
+
+                registerName = (EditText)findViewById(R.id.register_input_name);
+                registerEmail = (EditText)findViewById(R.id.register_input_email);
+                registerPass = (EditText)findViewById(R.id.register_input_password);
+                assert (registerName != null);
+                assert (registerEmail != null);
+                assert (registerPass != null);
+
                 MainActivity.this.curView = "REGISTER";
             }
         });
@@ -141,20 +152,14 @@ public class MainActivity extends AppCompatActivity {
         register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EditText nameInput = (EditText)findViewById(R.id.register_input_name);
-                EditText emailInput = (EditText)findViewById(R.id.register_input_email);
-                EditText passwordInput = (EditText)findViewById(R.id.register_input_password);
-                assert (nameInput != null);
-                assert (emailInput  != null);
-                assert (passwordInput != null);
-                String name = nameInput.getText().toString();
-                String email = emailInput.getText().toString();
-                String password = passwordInput.getText().toString();
+                String name = registerName.getText().toString();
+                String email = registerEmail.getText().toString();
+                String password = registerPass.getText().toString();
                 if (!email.equals("") && !password.equals("") && !name.equals("")) {
                     User user = new User(name, email, password);
                     makeRegisterRequest(user);
                 } else {
-                    Toast.makeText(getApplicationContext(), "All fields must be filled out", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "All fields must be filled out", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -172,7 +177,7 @@ public class MainActivity extends AppCompatActivity {
                 if (response.raw().code() != 200) {
                     Toast.makeText(getApplicationContext(), "Registration failed! Check all required fields are filled out", Toast.LENGTH_LONG).show();
                 } else {
-                    Toast.makeText(getApplicationContext(), "Successfully registered", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "Successfully registered", Toast.LENGTH_SHORT).show();
                     app.logUserIn(response.body(), MainActivity.this);
                 }
             }
