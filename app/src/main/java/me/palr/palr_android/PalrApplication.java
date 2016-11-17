@@ -34,6 +34,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class PalrApplication extends Application {
     private APIService apiService;
     User currentUser;
+    Token currentToken;
 
     List<Conversation> conversations;
 
@@ -60,6 +61,7 @@ public class PalrApplication extends Application {
     }
 
     public void logUserIn(Token token, MainActivity activity) {
+        currentToken = token;
         final String jwtToken = token.getAccessToken();
         Interceptor authorizationInterceptor = new Interceptor() {
             @Override
@@ -98,6 +100,8 @@ public class PalrApplication extends Application {
     public User getCurrentUser() {
         return currentUser;
     }
+
+    public Token getCurrentToken() { return currentToken; }
 
     public void setConversations(List<Conversation> conversations) {
         this.conversations = conversations;

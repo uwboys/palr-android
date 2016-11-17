@@ -1,12 +1,14 @@
 package me.palr.palr_android;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,13 +18,23 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import io.socket.client.IO;
+import io.socket.client.Socket;
+import io.socket.emitter.Emitter;
 import me.palr.palr_android.api.APIService;
 import me.palr.palr_android.models.Conversation;
 import me.palr.palr_android.models.Message;
+import me.palr.palr_android.models.Token;
+import me.palr.palr_android.models.User;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -36,6 +48,9 @@ public class ConversationViewActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private EditText messageContentInput;
     private SimpleItemRecyclerViewAdapter adapter;
+
+    private Socket mSocket;
+    private Boolean isConnected = true;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,14 +68,30 @@ public class ConversationViewActivity extends AppCompatActivity {
         setupContentInput();
 
         // And From your main() method or any other method
-        Timer timer = new Timer();
-        timer.schedule(new GetMessages(), 0, 2000);
+//        Timer timer = new Timer();
+//        timer.schedule(new GetMessages(), 0, 2000);
+
+        // To get message data pushed!
+        connectSocket();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
         makeMessageRequest();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        mSocket.disconnect();
+
+        mSocket.off(Socket.EVENT_CONNECT, onConnect);
+        mSocket.off(Socket.EVENT_DISCONNECT, onDisconnect);
+        mSocket.off(Socket.EVENT_CONNECT_ERROR, onConnectError);
+        mSocket.off(Socket.EVENT_CONNECT_TIMEOUT, onConnectError);
+        mSocket.off("message", onNewMessage);
     }
 
     private void setupMessageBtn() {
@@ -223,6 +254,91 @@ public class ConversationViewActivity extends AppCompatActivity {
             }
         }
     }
+
+    private void connectSocket() {
+        try {
+            mSocket = IO.socket(getResources().getString(R.string.websocket_url));
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
+
+        mSocket.on(Socket.EVENT_CONNECT, onConnect);
+        mSocket.on(Socket.EVENT_DISCONNECT, onDisconnect);
+        mSocket.on(Socket.EVENT_CONNECT_ERROR, onConnectError);
+        mSocket.on(Socket.EVENT_CONNECT_TIMEOUT, onConnectError);
+        mSocket.on("message", onNewMessage);
+        mSocket.connect();
+    }
+
+    private Emitter.Listener onConnect = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            ConversationViewActivity.this.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if(!isConnected) {
+                        isConnected = true;
+                    }
+                    Toast.makeText(ConversationViewActivity.this, "We connected bois", Toast.LENGTH_SHORT).show();
+                    Token curToken = ((PalrApplication) getApplication()).getCurrentToken();
+
+                    mSocket.emit("add_client", curToken.getAccessToken());
+                }
+            });
+        }
+    };
+
+    private Emitter.Listener onDisconnect = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            ConversationViewActivity.this.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    isConnected = false;
+                    Toast.makeText(ConversationViewActivity.this, "We disconnected bois", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+    };
+
+    private Emitter.Listener onConnectError = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            ConversationViewActivity.this.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(ConversationViewActivity.this,
+                            "We failed to connect bois :(", Toast.LENGTH_LONG).show();
+                }
+            });
+        }
+    };
+
+    private Emitter.Listener onNewMessage = new Emitter.Listener() {
+        @Override
+        public void call(final Object... args) {
+            ConversationViewActivity.this.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+//                    JSONObject data = (JSONObject) args[0];
+//                    String username;
+//                    String message;
+//                    try {
+//                        username = data.getString("username");
+//                        message = data.getString("message");
+//                    } catch (JSONException e) {
+//                        return;
+//                    }
+
+                    Toast.makeText(ConversationViewActivity.this,
+                            "We received a message bois!", Toast.LENGTH_SHORT).show();
+
+//                    removeTyping(username);
+//                    addMessage(username, message);
+                }
+            });
+        }
+    };
 
     class GetMessages extends TimerTask {
         public void run() {
