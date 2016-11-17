@@ -12,8 +12,7 @@ public class User {
     String password;
     Integer age;
     boolean inMatchProcess;
-    boolean isMatched;
-
+    boolean isTemporarilyMatched;
 
     public User() {}
 
@@ -92,11 +91,11 @@ public class User {
         this.inMatchProcess = inMatchProcess;
     }
 
-    public boolean isMatched() {
-        return isMatched;
+    public boolean isTemporarilyMatched() {
+        return isTemporarilyMatched;
     }
 
-    public void setMatched(boolean matched) {
-        isMatched = matched;
+    public void setTemporarilyMatched(boolean temporarilyMatched) {
+        isTemporarilyMatched = temporarilyMatched;
     }
 }

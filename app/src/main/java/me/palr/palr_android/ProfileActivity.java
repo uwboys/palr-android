@@ -39,6 +39,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         nameInput.setText(curUser.getName());
         emailInput.setText(curUser.getEmail());
-        ageInput.setText(curUser.getAge());
+        if (curUser.getAge() != null)
+            ageInput.setText(curUser.getAge());
     }
 }

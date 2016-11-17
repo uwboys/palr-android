@@ -114,7 +114,7 @@ public class PalrApplication extends Application {
                 } else {
                     currentUser = response.body();
                     Intent intent;
-                    if (currentUser.isMatched()) {
+                    if (currentUser.isTemporarilyMatched()) {
                         intent = new Intent(activity, ConversationListActivity.class);
                     } else {
                         intent = new Intent(activity, MatchActivity.class);

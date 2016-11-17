@@ -13,4 +13,9 @@
         <item name="windowNoTitle">true</item>
     </style>
 
+
+    <style name="AppTheme.ConversationListActionBar" parent="AppTheme">
+        <item name="android:textColorPrimary">@color/grey50</item>
+    </style>
+
 </resources>

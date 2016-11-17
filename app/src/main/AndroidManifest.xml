@@ -20,7 +20,8 @@
 
         <activity
             android:name="me.palr.palr_android.ConversationListActivity"
-            android:label="Conversations">
+            android:label="Conversations"
+            android:theme="@style/AppTheme.NoActionBar">
         </activity>
 
         <activity
