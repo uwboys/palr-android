@@ -6,13 +6,18 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.joanzapata.iconify.IconDrawable;
+import com.joanzapata.iconify.fonts.MaterialIcons;
 import com.squareup.picasso.Picasso;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 import java.util.List;
@@ -32,6 +37,39 @@ public class ConversationListActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_conversation_list);
         makeConversationRequest();
+        setupAppbar();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.conversation_list_actions, menu);
+        MenuItem myProfile = menu.findItem(R.id.action_my_profile);
+        myProfile.setIcon(
+                new IconDrawable(this, MaterialIcons.md_account_circle)
+                        .colorRes(R.color.grey50)
+                        .actionBarSize()
+        );
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_my_profile:
+                Intent intent = new Intent(this, ProfileActivity.class);
+                this.startActivity(intent);
+                return true;
+            default:
+                // If we got here, the user's action was not recognized.
+                // Invoke the superclass to handle it.
+                return super.onOptionsItemSelected(item);
+
+        }
+    }
+
+    private void setupAppbar() {
+        Toolbar toolbar = (Toolbar) findViewById(R.id.conversation_list_appbar);
+        setSupportActionBar(toolbar);
     }
 
 
