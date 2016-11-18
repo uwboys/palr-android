@@ -1,9 +1,7 @@
 package me.palr.palr_android;
 
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.LinearLayoutManager;
@@ -17,15 +15,12 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import io.socket.client.IO;
 import io.socket.client.Socket;
@@ -34,7 +29,6 @@ import me.palr.palr_android.api.APIService;
 import me.palr.palr_android.models.Conversation;
 import me.palr.palr_android.models.Message;
 import me.palr.palr_android.models.Token;
-import me.palr.palr_android.models.User;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -49,6 +43,8 @@ public class ConversationViewActivity extends AppCompatActivity {
     private EditText messageContentInput;
     private SimpleItemRecyclerViewAdapter adapter;
 
+    private List<Message> messageList;
+
     private Socket mSocket;
     private Boolean isConnected = true;
 
@@ -59,17 +55,18 @@ public class ConversationViewActivity extends AppCompatActivity {
         int position = getIntent().getIntExtra("item_index", 0);
         PalrApplication app = (PalrApplication) getApplication();
 
+        messageList = new ArrayList<Message>();
+        adapter = new SimpleItemRecyclerViewAdapter(messageList);
+
         conversation = app.getConversations().get(position);
         messageSendBtn = (AppCompatButton) findViewById(R.id.message_send_btn);
         messageContentInput = (EditText) findViewById(R.id.message_content_input);
+        recyclerView = (RecyclerView) findViewById(R.id.message_list);
         assert (messageSendBtn != null);
         assert (messageContentInput != null);
+        assert (recyclerView != null);
         setupMessageBtn();
-        setupContentInput();
-
-        // And From your main() method or any other method
-//        Timer timer = new Timer();
-//        timer.schedule(new GetMessages(), 0, 2000);
+        setupRecyclerView();
 
         // To get message data pushed!
         connectSocket();
@@ -114,16 +111,16 @@ public class ConversationViewActivity extends AppCompatActivity {
         });
     }
 
-    private void setupContentInput() {
-        messageContentInput.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-//                Toast.makeText(ConversationViewActivity.this, "FOCUS", Toast.LENGTH_SHORT).show();
+//    private void setupContentInput() {
+//        messageContentInput.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+//            @Override
+//            public void onFocusChange(View v, boolean hasFocus) {
+////                Toast.makeText(ConversationViewActivity.this, "FOCUS", Toast.LENGTH_SHORT).show();
 //                if (hasFocus && recyclerView != null)
 //                    recyclerView.scrollToPosition(0);
-            }
-        });
-    }
+//            }
+//        });
+//    }
 
 
     private void makeMessageCreateRequest(Message message) {
@@ -142,7 +139,7 @@ public class ConversationViewActivity extends AppCompatActivity {
                     EditText contentInput = (EditText)findViewById(R.id.message_content_input);
                     assert (contentInput != null);
                     contentInput.setText("");
-                    makeMessageRequest();
+                    addMessage(response.body());
                 }
             }
 
@@ -167,9 +164,10 @@ public class ConversationViewActivity extends AppCompatActivity {
                 if (response.body() == null) {
                     handleNullBody(response);
                 } else {
-                    recyclerView = (RecyclerView) findViewById(R.id.message_list);
-                    assert recyclerView != null;
-                    setupRecyclerView(recyclerView, response.body());
+                    messageList.clear();
+                    messageList.addAll(response.body());
+                    adapter.notifyDataSetChanged();
+                    scrollToBottom();
                 }
             }
 
@@ -192,14 +190,18 @@ public class ConversationViewActivity extends AppCompatActivity {
         }
     }
 
-    private void setupRecyclerView(@NonNull RecyclerView recyclerView, List<Message> messages) {
+
+    private void scrollToBottom() {
+        recyclerView.scrollToPosition(0);
+    }
+
+    private void setupRecyclerView() {
         LinearLayoutManager layout = new LinearLayoutManager(ConversationViewActivity.this);
-        adapter = new SimpleItemRecyclerViewAdapter(messages);
         layout.setReverseLayout(true);
         layout.setStackFromEnd(true);
         recyclerView.setLayoutManager(layout);
-        recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(messages));
-        recyclerView.scrollToPosition(0);
+        recyclerView.setAdapter(adapter);
+        scrollToBottom();
     }
 
     public class SimpleItemRecyclerViewAdapter
@@ -255,6 +257,16 @@ public class ConversationViewActivity extends AppCompatActivity {
         }
     }
 
+    private void addMessage(Message newMsg) {
+        if (messageList != null && adapter != null) {
+            messageList.add(0, newMsg);
+            Log.d("DEBUG", "Inserting Message");
+            Log.d("DEBUG", "Size of messageList: " + messageList.size());
+            recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(messageList));
+            scrollToBottom();
+        }
+    }
+
     private void connectSocket() {
         try {
             mSocket = IO.socket(getResources().getString(R.string.websocket_url));
@@ -279,7 +291,7 @@ public class ConversationViewActivity extends AppCompatActivity {
                     if(!isConnected) {
                         isConnected = true;
                     }
-                    Toast.makeText(ConversationViewActivity.this, "We connected bois", Toast.LENGTH_SHORT).show();
+                    Log.d("DEBUG", "We've connected to the websocket");
                     Token curToken = ((PalrApplication) getApplication()).getCurrentToken();
 
                     mSocket.emit("add_client", curToken.getAccessToken());
@@ -295,7 +307,7 @@ public class ConversationViewActivity extends AppCompatActivity {
                 @Override
                 public void run() {
                     isConnected = false;
-                    Toast.makeText(ConversationViewActivity.this, "We disconnected bois", Toast.LENGTH_SHORT).show();
+                    Log.d("DEBUG", "We've disconnected from websocket");
                 }
             });
         }
@@ -307,8 +319,7 @@ public class ConversationViewActivity extends AppCompatActivity {
             ConversationViewActivity.this.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    Toast.makeText(ConversationViewActivity.this,
-                            "We failed to connect bois :(", Toast.LENGTH_LONG).show();
+                    Log.d("DEBUG", "Websocket errored out");
                 }
             });
         }
@@ -320,29 +331,13 @@ public class ConversationViewActivity extends AppCompatActivity {
             ConversationViewActivity.this.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-//                    JSONObject data = (JSONObject) args[0];
-//                    String username;
-//                    String message;
-//                    try {
-//                        username = data.getString("username");
-//                        message = data.getString("message");
-//                    } catch (JSONException e) {
-//                        return;
-//                    }
-
-                    Toast.makeText(ConversationViewActivity.this,
-                            "We received a message bois!", Toast.LENGTH_SHORT).show();
-
-//                    removeTyping(username);
-//                    addMessage(username, message);
+                    Gson gson = new Gson();
+                    JsonParser jsonParser = new JsonParser();
+                    JsonObject gsonMsg = (JsonObject)jsonParser.parse(args[0].toString());
+                    Message newMsg = gson.fromJson(gsonMsg, Message.class);
+                    addMessage(newMsg);
                 }
             });
         }
     };
-
-    class GetMessages extends TimerTask {
-        public void run() {
-            makeMessageRequest();
-        }
-    }
 }

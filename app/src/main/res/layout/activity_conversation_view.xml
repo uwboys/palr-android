@@ -3,7 +3,6 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
     <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
@@ -26,22 +25,24 @@
             />
     </android.support.design.widget.CoordinatorLayout>
 
-    <LinearLayout
+    <RelativeLayout
     android:id="@+id/conversation_card"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_gravity="bottom">
+    android:layout_height="50dp"
+    android:gravity="bottom">
         <EditText
             android:id="@+id/message_content_input"
             android:inputType="textMultiLine"
             android:layout_height="wrap_content"
-            android:layout_width="fill_parent"
-            android:layout_weight="0.5"
+            android:layout_width="match_parent"
+            android:layout_toStartOf="@+id/message_send_btn"
+            android:layout_alignBottom="@+id/message_send_btn"
             android:scrollbars="vertical"
             android:hint="Say something..."
             android:padding="10dp"
             android:paddingBottom="0dp"
-            android:background="@android:color/transparent"/>
+            android:background="@android:color/transparent"
+            android:layout_alignParentTop="true" />
 
         <android.support.v7.widget.AppCompatButton
             android:id="@+id/message_send_btn"
@@ -49,12 +50,14 @@
             android:paddingBottom="0dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentTop="true"
             android:text="Send"
             app:backgroundTint="@color/colorPrimary"
             android:textColor="@color/grey50"
             android:layout_gravity="bottom"
             android:textSize="15sp"/>
-    </LinearLayout>
+    </RelativeLayout>
 
 </LinearLayout>
 
