@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -19,10 +20,13 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.squareup.picasso.Picasso;
+
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import io.socket.client.IO;
 import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
@@ -213,6 +217,7 @@ public class ConversationViewActivity extends AppCompatActivity {
         layout.setStackFromEnd(true);
         recyclerView.setLayoutManager(layout);
         recyclerView.setAdapter(adapter);
+        recyclerView.setNestedScrollingEnabled(false);
         scrollToBottom();
     }
 
@@ -242,6 +247,10 @@ public class ConversationViewActivity extends AppCompatActivity {
             // get current user
             PalrApplication app = (PalrApplication) getApplication();
 
+            Picasso.with(ConversationViewActivity.this)
+                    .load(R.drawable.default_profile_picture)
+                    .into(holder.createdByImage);
+
             if (holder.mItem.getCreatedBy() != null && app.getCurrentUser().getId().equals(holder.mItem.getCreatedBy().getId())) {
                 holder.createdByName.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
             } else {
@@ -255,14 +264,16 @@ public class ConversationViewActivity extends AppCompatActivity {
         }
 
         public class ViewHolder extends RecyclerView.ViewHolder {
-            public final LinearLayout cardView;
+            public final CardView cardView;
+            public final CircleImageView createdByImage;
             public final TextView createdByName;
             public final TextView content;
             public Message mItem;
 
             public ViewHolder(View view) {
                 super(view);
-                cardView = (LinearLayout) view.findViewById(R.id.message_card);
+                createdByImage = (CircleImageView) view.findViewById(R.id.message_card_image);
+                cardView = (CardView) view.findViewById(R.id.message_card);
                 createdByName  = (TextView) view.findViewById(R.id.message_created_by_name);
                 content = (TextView) view.findViewById(R.id.message_content);
             }

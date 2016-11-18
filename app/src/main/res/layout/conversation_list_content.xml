@@ -9,8 +9,7 @@
         android:id="@+id/conversation_card"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="10dp"
-        >
+        android:padding="10dp">
 
         <de.hdodenhof.circleimageview.CircleImageView
             xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -36,8 +35,7 @@
             android:id="@+id/conversation_card_date"
             android:layout_toEndOf="@+id/conversation_card_image"
             android:layout_below="@+id/conversation_card_name"
-            android:textSize="16sp"
-            />
+            android:textSize="16sp"/>
 
     </RelativeLayout>
 </LinearLayout>

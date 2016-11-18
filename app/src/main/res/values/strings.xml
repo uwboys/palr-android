@@ -1,5 +1,5 @@
 <resources>
     <string name="app_name">Palr</string>
-    <string name="base_url">http://palrserver.azurewebsites.net/</string>
-    <string name="websocket_url">http://palrserver.azurewebsites.net/ws</string>
+    <string name="base_url">https://172ffa8a.ngrok.io/</string>
+    <string name="websocket_url">https://172ffa8a.ngrok.io/ws</string>
 </resources>
