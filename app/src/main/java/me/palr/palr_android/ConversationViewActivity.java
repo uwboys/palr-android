@@ -200,15 +200,18 @@ public class ConversationViewActivity extends AppCompatActivity {
 
 
     private void scrollToBottom() {
-        View lastChild = scrollView.getChildAt(scrollView.getChildCount() - 1);
-        int bottom = lastChild.getBottom() + scrollView.getPaddingBottom();
-        int sy = scrollView.getScrollY();
-        int sh = scrollView.getHeight();
-        int delta = bottom - (sy + sh);
+        scrollView.post(new Runnable() {
+            @Override
+            public void run() {
+                View lastChild = scrollView.getChildAt(scrollView.getChildCount() - 1);
+                int bottom = lastChild.getBottom() + scrollView.getPaddingBottom();
+                int sy = scrollView.getScrollY();
+                int sh = scrollView.getHeight();
+                int delta = bottom - (sy + sh);
 
-        scrollView.smoothScrollBy(0, delta);
-//        scrollView.smoothScrollTo()
-//        scrollView.fullScroll(View.FOCUS_DOWN);
+                scrollView.smoothScrollBy(0, delta);
+            }
+        });
     }
 
     private void setupRecyclerView() {
