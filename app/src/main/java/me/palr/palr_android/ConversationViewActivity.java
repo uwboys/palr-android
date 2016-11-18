@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,6 +41,7 @@ public class ConversationViewActivity extends AppCompatActivity {
     private Conversation conversation;
     private AppCompatButton messageSendBtn;
     private RecyclerView recyclerView;
+    private ScrollView scrollView;
     private EditText messageContentInput;
     private SimpleItemRecyclerViewAdapter adapter;
 
@@ -62,9 +64,11 @@ public class ConversationViewActivity extends AppCompatActivity {
         messageSendBtn = (AppCompatButton) findViewById(R.id.message_send_btn);
         messageContentInput = (EditText) findViewById(R.id.message_content_input);
         recyclerView = (RecyclerView) findViewById(R.id.message_list);
+        scrollView = (ScrollView) findViewById(R.id.message_list_wrapper);
         assert (messageSendBtn != null);
         assert (messageContentInput != null);
         assert (recyclerView != null);
+        assert (scrollView != null);
         setupMessageBtn();
         setupRecyclerView();
 
@@ -192,7 +196,15 @@ public class ConversationViewActivity extends AppCompatActivity {
 
 
     private void scrollToBottom() {
-        recyclerView.scrollToPosition(0);
+        View lastChild = scrollView.getChildAt(scrollView.getChildCount() - 1);
+        int bottom = lastChild.getBottom() + scrollView.getPaddingBottom();
+        int sy = scrollView.getScrollY();
+        int sh = scrollView.getHeight();
+        int delta = bottom - (sy + sh);
+
+        scrollView.smoothScrollBy(0, delta);
+//        scrollView.smoothScrollTo()
+//        scrollView.fullScroll(View.FOCUS_DOWN);
     }
 
     private void setupRecyclerView() {
