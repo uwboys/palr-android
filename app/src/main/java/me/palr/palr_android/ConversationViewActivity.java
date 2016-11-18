@@ -1,6 +1,7 @@
 package me.palr.palr_android;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
@@ -119,17 +120,11 @@ public class ConversationViewActivity extends AppCompatActivity {
         });
     }
 
-//    private void setupContentInput() {
-//        messageContentInput.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-//            @Override
-//            public void onFocusChange(View v, boolean hasFocus) {
-////                Toast.makeText(ConversationViewActivity.this, "FOCUS", Toast.LENGTH_SHORT).show();
-//                if (hasFocus && recyclerView != null)
-//                    recyclerView.scrollToPosition(0);
-//            }
-//        });
-//    }
-
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        scrollToBottom();
+    }
 
     private void makeMessageCreateRequest(Message message) {
         final PalrApplication app = (PalrApplication) getApplication();
@@ -213,6 +208,7 @@ public class ConversationViewActivity extends AppCompatActivity {
             }
         });
     }
+
 
     private void setupRecyclerView() {
         LinearLayoutManager layout = new LinearLayoutManager(ConversationViewActivity.this);

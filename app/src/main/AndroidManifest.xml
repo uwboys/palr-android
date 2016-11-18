@@ -27,7 +27,8 @@
         <activity
             android:name="me.palr.palr_android.ConversationViewActivity"
             android:label="Conversation"
-            android:windowSoftInputMode="adjustResize">
+            android:windowSoftInputMode="adjustResize"
+            android:configChanges="orientation|screenSize|keyboardHidden">
         </activity>
 
         <activity
