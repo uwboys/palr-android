@@ -46,5 +46,5 @@ public interface APIService {
     Call<User> updateUser(@Body User user);
 
     @POST("/match/permanent")
-    Call<String> requestPermanentMatch(@Body Map<String, String> payload);
+    Call<Object> requestPermanentMatch(@Body Map<String, String> payload);
 }

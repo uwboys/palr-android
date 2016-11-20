@@ -121,8 +121,12 @@ public class ConversationViewActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.conversation_view_actions, menu);
         MenuItem myProfile = menu.findItem(R.id.action_permanent_match);
+        MaterialIcons icon = MaterialIcons.md_favorite_border;
+        if (conversation.getIsPermanent()) {
+            icon = MaterialIcons.md_favorite;
+        }
         myProfile.setIcon(
-                new IconDrawable(this, MaterialIcons.md_favorite_border)
+                new IconDrawable(this, icon)
                         .colorRes(R.color.grey50)
                         .actionBarSize()
         );
@@ -133,7 +137,9 @@ public class ConversationViewActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_permanent_match:
-                makePermanentMatchRequest();
+                if (!conversation.getIsPermanent()) {
+                    makePermanentMatchRequest();
+                }
                 return true;
             default:
                 // If we got here, the user's action was not recognized.
@@ -184,11 +190,11 @@ public class ConversationViewActivity extends AppCompatActivity {
         Map<String, String> payload = new HashMap<>();
         payload.put("conversationId", conversation.getId());
 
-        Call<String> createPermReq = service.requestPermanentMatch(payload);
+        Call<Object> createPermReq = service.requestPermanentMatch(payload);
 
-        createPermReq.enqueue(new Callback<String>() {
+        createPermReq.enqueue(new Callback<Object>() {
             @Override
-            public void onResponse(Call<String> call, Response<String> response) {
+            public void onResponse(Call<Object> call, Response<Object> response) {
 
                 if (response.raw().code() != 200) {
                     Toast.makeText(getApplicationContext(), "Something went wrong, make permanent request unsuccessful!", Toast.LENGTH_SHORT).show();
@@ -198,7 +204,7 @@ public class ConversationViewActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<String> call, Throwable t) {
+            public void onFailure(Call<Object> call, Throwable t) {
                 Toast.makeText(getApplicationContext(), "Something went wrong, make permanent request unsuccessful!", Toast.LENGTH_SHORT).show();
             }
         });

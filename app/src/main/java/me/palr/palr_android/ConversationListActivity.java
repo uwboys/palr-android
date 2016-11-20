@@ -147,7 +147,7 @@ public class ConversationListActivity extends AppCompatActivity {
             final int index = position;
             holder.mItem = this.conversations.get(position);
             User pal = holder.mItem.getPal();
-            String palName = String.format("%s %s", pal.getName(), (holder.mItem.getIsPermanent() ? "{md-check-circle @color/colorPrimary}" : ""));
+            String palName = String.format("%s %s", pal.getName(), (holder.mItem.getIsPermanent() ? "{md-favorite @color/colorPrimary}" : ""));
             holder.palName.setText(palName);
 //            DateTime lastMsgTime = fmt.parseDateTime(holder.mItem.getLastMessageDate());
             holder.lastMessageDate.setText("Last Message: " + holder.mItem.getLastMessageDate());

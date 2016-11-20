@@ -16,6 +16,7 @@ public class User {
     String imageUrl;
     boolean inMatchProcess;
     boolean isTemporarilyMatched;
+    boolean isPermanentlyMatched;
 
     public User() {}
 
@@ -124,5 +125,13 @@ public class User {
 
     public void setTemporarilyMatched(boolean temporarilyMatched) {
         isTemporarilyMatched = temporarilyMatched;
+    }
+
+    public boolean isPermanentlyMatched() {
+        return isPermanentlyMatched;
+    }
+
+    public void setPermanentlyMatched(boolean permanentlyMatched) {
+        isPermanentlyMatched = permanentlyMatched;
     }
 }
