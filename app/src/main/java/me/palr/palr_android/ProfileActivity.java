@@ -27,10 +27,10 @@ public class ProfileActivity extends AppCompatActivity {
     EditText emailInput;
     EditText passwordInput;
     EditText ageInput;
+    EditText hobbiesInput;
 
     AutoCompleteTextView countryInput;
     AutoCompleteTextView ethnicityInput;
-//    MultiAutoCompleteTextView hobbiesInput;
 
     boolean didChange = false;
 
@@ -42,15 +42,17 @@ public class ProfileActivity extends AppCompatActivity {
         emailInput = (EditText) findViewById(R.id.profile_input_email);
         passwordInput = (EditText) findViewById(R.id.profile_input_password);
         ageInput = (EditText) findViewById(R.id.profile_input_age);
+        hobbiesInput = (EditText) findViewById(R.id.profile_input_hobbies);
         countryInput = (AutoCompleteTextView) findViewById(R.id.profile_input_country);
         ethnicityInput = (AutoCompleteTextView) findViewById(R.id.profile_input_ethnicity);
-//        hobbiesInput = (MultiAutoCompleteTextView) findViewById(R.id.profile_input_hobbies);
 
         assert (nameInput != null);
         assert (emailInput != null);
         assert (passwordInput != null);
         assert (ageInput != null);
         assert (countryInput != null);
+        assert (ethnicityInput != null);
+        assert (hobbiesInput != null);
 
         setupAutoCompleteViews();
 
@@ -72,6 +74,18 @@ public class ProfileActivity extends AppCompatActivity {
 
         if (curUser.getEthnicity() != null)
             ethnicityInput.setText(curUser.getEthnicity());
+
+        if (curUser.getHobbies().length > 0) {
+            String[] arr = curUser.getHobbies();
+            StringBuilder sb = new StringBuilder();
+            for(int i = 0; i < arr.length; i++) {
+                sb.append(arr[i]);
+                if (i != arr.length - 1)
+                    sb.append(", ");
+            }
+            hobbiesInput.setText(sb.toString());
+        }
+
     }
 
     private void setupAutoCompleteViews() {
@@ -146,10 +160,21 @@ public class ProfileActivity extends AppCompatActivity {
     private void updateCurrentUserFields(User curUser) {
         Integer age = Integer.parseInt(ageInput.getText().toString().equals("") ? "0" : ageInput.getText().toString());
 
-            if (!age.equals(curUser.getAge()) && age > 0) {
-                curUser.setAge(age);
-                didChange = true;
-            }
+        if (!age.equals(curUser.getAge()) && age > 0) {
+            curUser.setAge(age);
+            didChange = true;
+        }
+
+        String hobbies = hobbiesInput.getText().toString();
+        String[] hobbiesArr = hobbies.split(",");
+        for(int i = 0; i < hobbiesArr.length; i++) {
+            hobbiesArr[i] = hobbiesArr[i].trim();
+        }
+
+        if (hobbiesArr.length > 0) {
+            curUser.setHobbies(hobbiesArr);
+            didChange = true;
+        }
     }
 
     private void makeUserUpdateRequest(User user) {

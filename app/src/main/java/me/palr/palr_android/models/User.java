@@ -12,6 +12,7 @@ public class User {
     String password;
     Integer age;
     String ethnicity;
+    String[] hobbies;
     boolean inMatchProcess;
     boolean isTemporarilyMatched;
 
@@ -90,6 +91,14 @@ public class User {
 
     public void setEthnicity(String ethnicity) {
         this.ethnicity = ethnicity;
+    }
+
+    public String[] getHobbies() {
+        return hobbies;
+    }
+
+    public void setHobbies(String[] hobbies) {
+        this.hobbies = hobbies;
     }
 
     public boolean isInMatchProcess() {
