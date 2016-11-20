@@ -8,6 +8,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
+import android.widget.MultiAutoCompleteTextView;
 import android.widget.Toast;
 
 import me.palr.palr_android.api.APIService;
@@ -29,6 +30,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     AutoCompleteTextView countryInput;
     AutoCompleteTextView ethnicityInput;
+//    MultiAutoCompleteTextView hobbiesInput;
 
     boolean didChange = false;
 
@@ -41,8 +43,8 @@ public class ProfileActivity extends AppCompatActivity {
         passwordInput = (EditText) findViewById(R.id.profile_input_password);
         ageInput = (EditText) findViewById(R.id.profile_input_age);
         countryInput = (AutoCompleteTextView) findViewById(R.id.profile_input_country);
-
-
+        ethnicityInput = (AutoCompleteTextView) findViewById(R.id.profile_input_ethnicity);
+//        hobbiesInput = (MultiAutoCompleteTextView) findViewById(R.id.profile_input_hobbies);
 
         assert (nameInput != null);
         assert (emailInput != null);
@@ -67,13 +69,23 @@ public class ProfileActivity extends AppCompatActivity {
 
         if (curUser.getCountry() != null)
             countryInput.setText(curUser.getCountry());
+
+        if (curUser.getEthnicity() != null)
+            ethnicityInput.setText(curUser.getEthnicity());
     }
 
     private void setupAutoCompleteViews() {
         ArrayAdapter<String> countryInputAdapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_dropdown_item_1line, COUNTRIES);
+
+        ArrayAdapter<String> ethnicityInputAdapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_dropdown_item_1line, ETHNICITICES);
+
         countryInput.setThreshold(1);
         countryInput.setAdapter(countryInputAdapter);
+
+        ethnicityInput.setThreshold(1);
+        ethnicityInput.setAdapter(ethnicityInputAdapter);
 
         countryInput.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -88,8 +100,22 @@ public class ProfileActivity extends AppCompatActivity {
                     curUser.setCountry(newCountry);
                     didChange = true;
                 }
+            }
+        });
 
-                Toast.makeText(ProfileActivity.this, newCountry, Toast.LENGTH_SHORT).show();
+        ethnicityInput.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View arg1, int position,
+                                    long id) {
+                PalrApplication app = (PalrApplication) getApplication();
+                User curUser = app.getCurrentUser();
+
+                String newEthnicity = (String) parent.getAdapter().getItem(position);
+
+                if (newEthnicity != null && !newEthnicity.equals(curUser.getEthnicity())) {
+                    curUser.setEthnicity(newEthnicity);
+                    didChange = true;
+                }
             }
         });
     }
@@ -110,7 +136,7 @@ public class ProfileActivity extends AppCompatActivity {
                 if (didChange) {
                     makeUserUpdateRequest(curUser);
                 } else {
-                    Toast.makeText(ProfileActivity.this, "Nothing updated", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ProfileActivity.this, "No changes made to profile!", Toast.LENGTH_SHORT).show();
                 }
 
             }

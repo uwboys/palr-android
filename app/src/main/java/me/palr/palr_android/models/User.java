@@ -11,6 +11,7 @@ public class User {
     String country;
     String password;
     Integer age;
+    String ethnicity;
     boolean inMatchProcess;
     boolean isTemporarilyMatched;
 
@@ -81,6 +82,14 @@ public class User {
 
     public void setAge(Integer age) {
         this.age = age;
+    }
+
+    public String getEthnicity() {
+        return ethnicity;
+    }
+
+    public void setEthnicity(String ethnicity) {
+        this.ethnicity = ethnicity;
     }
 
     public boolean isInMatchProcess() {

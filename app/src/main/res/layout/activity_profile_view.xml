@@ -62,8 +62,7 @@
     <android.support.design.widget.TextInputLayout
         android:id="@+id/profile_layout_country"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        >
+        android:layout_height="wrap_content">
 
         <AutoCompleteTextView
             android:id="@+id/profile_input_country"
@@ -73,6 +72,23 @@
             android:imeOptions="actionNext"
             android:inputType="text"
             android:hint="Country"
+            android:singleLine="true" />
+
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/profile_layout_ethnicity"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <AutoCompleteTextView
+            android:id="@+id/profile_input_ethnicity"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:dropDownVerticalOffset="15sp"
+            android:imeOptions="actionNext"
+            android:inputType="text"
+            android:hint="Ethnicity"
             android:singleLine="true" />
 
     </android.support.design.widget.TextInputLayout>
