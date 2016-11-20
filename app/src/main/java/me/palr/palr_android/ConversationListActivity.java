@@ -56,7 +56,7 @@ public class ConversationListActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_my_profile:
-                Intent intent = new Intent(this, ProfileActivity.class);
+                Intent intent = new Intent(this, ProfileEditActivity.class);
                 this.startActivity(intent);
                 return true;
             default:

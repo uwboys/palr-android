@@ -32,8 +32,8 @@
         </activity>
 
         <activity
-            android:name="me.palr.palr_android.ProfileActivity"
-            android:label="Profile">
+            android:name="me.palr.palr_android.ProfileEditActivity"
+            android:label="Edit Profile">
         </activity>
 
         <activity

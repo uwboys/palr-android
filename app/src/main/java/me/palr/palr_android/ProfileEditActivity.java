@@ -21,7 +21,7 @@ import retrofit2.Response;
 /**
  * Created by maazali on 2016-11-16.
  */
-public class ProfileActivity extends AppCompatActivity {
+public class ProfileEditActivity extends AppCompatActivity {
 
     EditText nameInput;
     EditText emailInput;
@@ -37,7 +37,7 @@ public class ProfileActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_profile_view);
+        setContentView(R.layout.activity_profile_edit_view);
         nameInput = (EditText) findViewById(R.id.profile_input_name);
         emailInput = (EditText) findViewById(R.id.profile_input_email);
         passwordInput = (EditText) findViewById(R.id.profile_input_password);
@@ -150,7 +150,7 @@ public class ProfileActivity extends AppCompatActivity {
                 if (didChange) {
                     makeUserUpdateRequest(curUser);
                 } else {
-                    Toast.makeText(ProfileActivity.this, "No changes made to profile!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ProfileEditActivity.this, "No changes made to profile!", Toast.LENGTH_SHORT).show();
                 }
 
             }
