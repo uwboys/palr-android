@@ -14,6 +14,7 @@ import android.widget.Toast;
 import me.palr.palr_android.api.APIService;
 import me.palr.palr_android.models.MatchPayload;
 import me.palr.palr_android.models.Token;
+import me.palr.palr_android.models.User;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -88,6 +89,13 @@ public class MatchActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "We are in the process of matching you up!", Toast.LENGTH_LONG).show();
                     inProcess = true;
                     MatchActivity.this.setButtonVisibility();
+                    PalrApplication app = (PalrApplication) getApplication();
+                    User curUser = app.getCurrentUser();
+                    if (curUser.isPermanentlyMatched()) {
+                        Intent intent = new Intent(MatchActivity.this, ConversationListActivity.class);
+                        MatchActivity.this.startActivity(intent);
+                    }
+
                 }
 
             }
