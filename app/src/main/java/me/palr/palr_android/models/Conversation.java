@@ -8,9 +8,9 @@ public class Conversation {
     User pal;
     User user;
     String conversationDataId;
-    String permanent;
     String lastMessageDate;
     String createdAt;
+    boolean isPermanent;
 
     public String getId() {
         return id;
@@ -36,12 +36,12 @@ public class Conversation {
         this.conversationDataId = conversationDataId;
     }
 
-    public String getPermanent() {
-        return permanent;
+    public boolean getIsPermanent() {
+        return isPermanent;
     }
 
-    public void setPermanent(String permanent) {
-        this.permanent = permanent;
+    public void setPermanent(boolean isPermanent) {
+        this.isPermanent = isPermanent;
     }
 
     public String getLastMessageDate() {

@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import com.joanzapata.iconify.IconDrawable;
 import com.joanzapata.iconify.fonts.MaterialIcons;
+import com.joanzapata.iconify.widget.IconTextView;
 import com.squareup.picasso.Picasso;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
@@ -32,6 +33,7 @@ import java.util.List;
 import de.hdodenhof.circleimageview.CircleImageView;
 import me.palr.palr_android.api.APIService;
 import me.palr.palr_android.models.Conversation;
+import me.palr.palr_android.models.User;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -144,7 +146,9 @@ public class ConversationListActivity extends AppCompatActivity {
 //            DateTimeFormatter fmt = ISODateTimeFormat.dateTime();
             final int index = position;
             holder.mItem = this.conversations.get(position);
-            holder.palName.setText(holder.mItem.getPal().getName());
+            User pal = holder.mItem.getPal();
+            String palName = String.format("%s %s", pal.getName(), (holder.mItem.getIsPermanent() ? "{md-check-circle @color/colorPrimary}" : ""));
+            holder.palName.setText(palName);
 //            DateTime lastMsgTime = fmt.parseDateTime(holder.mItem.getLastMessageDate());
             holder.lastMessageDate.setText("Last Message: " + holder.mItem.getLastMessageDate());
 
@@ -174,7 +178,7 @@ public class ConversationListActivity extends AppCompatActivity {
         public class ViewHolder extends RecyclerView.ViewHolder {
             public final RelativeLayout cardView;
             public final CircleImageView palImage;
-            public final TextView palName;
+            public final IconTextView palName;
             public final TextView lastMessageDate;
             public Conversation mItem;
 
@@ -182,7 +186,7 @@ public class ConversationListActivity extends AppCompatActivity {
                 super(view);
                 cardView = (RelativeLayout) view.findViewById(R.id.conversation_card);
                 palImage = (CircleImageView) view.findViewById(R.id.conversation_card_image);
-                palName = (TextView) view.findViewById(R.id.conversation_card_name);
+                palName = (IconTextView) view.findViewById(R.id.conversation_card_name);
                 lastMessageDate = (TextView) view.findViewById(R.id.conversation_card_date);
             }
         }
