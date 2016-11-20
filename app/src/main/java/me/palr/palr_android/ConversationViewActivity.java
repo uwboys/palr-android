@@ -112,35 +112,7 @@ public class ConversationViewActivity extends AppCompatActivity {
     }
 
     private void setupActionBar() {
-        final Toolbar toolbar = (Toolbar) findViewById(R.id.conversation_view_toolbar);
-
-        toolbar.setTitle(conversation.getPal().getName());
-        Picasso.with(this)
-                .load(conversation.getPal().getImageUrl())
-                .placeholder(this.getResources().getDrawable(R.drawable.default_profile_picture))
-                .error(this.getResources().getDrawable(R.drawable.default_profile_picture))
-                .resize(130, 130)
-                .into(new Target() {
-                    @Override
-                    public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                        RoundedBitmapDrawable imageDrawable = RoundedBitmapDrawableFactory.create(getResources(), bitmap);
-                        imageDrawable.setCircular(true);
-                        imageDrawable.setCornerRadius(Math.max(bitmap.getWidth(), bitmap.getHeight()) / 2.0f);
-                        toolbar.setLogo(imageDrawable);
-                    }
-                    @Override
-                    public void onBitmapFailed(Drawable errorDrawable)
-                    {
-                        toolbar.setLogo(errorDrawable);
-                    }
-
-                    @Override
-                    public void onPrepareLoad(Drawable placeHolderDrawable)
-                    {
-                        toolbar.setLogo(placeHolderDrawable);
-                    }
-                });
-        setSupportActionBar(toolbar);
+        setTitle(conversation.getPal().getName());
     }
 
     private void setupMessageBtn() {
