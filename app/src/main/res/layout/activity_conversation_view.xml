@@ -1,9 +1,21 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:andorid="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    >
+    android:layout_height="match_parent">
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/conversation_view_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        app:popupTheme="@style/AppTheme.ConversationViewActionBar"
+        android:clickable="false"
+        app:contentInsetRight="10dp"
+        android:background="@color/colorPrimary"
+        android:textColorPrimary="@color/grey50"
+        android:titleTextColor="@color/colorAccent"
+        android:titleTextAppearance="@color/grey50"
+        andorid:theme="@style/AppTheme.ConversationViewActionBar"/>
     <ScrollView
         android:id="@+id/message_list_wrapper"
         android:layout_width="match_parent"

@@ -13,6 +13,7 @@ public class User {
     Integer age;
     String ethnicity;
     String[] hobbies;
+    String imageUrl;
     boolean inMatchProcess;
     boolean isTemporarilyMatched;
 
@@ -99,6 +100,14 @@ public class User {
 
     public void setHobbies(String[] hobbies) {
         this.hobbies = hobbies;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     public boolean isInMatchProcess() {

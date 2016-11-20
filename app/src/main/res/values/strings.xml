@@ -1,5 +1,5 @@
 <resources>
     <string name="app_name">Palr</string>
-    <string name="base_url">https://palr.herokuapp.com/</string>
-    <string name="websocket_url">https://palr.herokuapp.com/ws</string>
+    <string name="base_url">http://palrserver.azurewebsites.net/</string>
+    <string name="websocket_url">http://palrserver.azurewebsites.net/ws</string>
 </resources>

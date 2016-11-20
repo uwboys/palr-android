@@ -2,12 +2,18 @@ package me.palr.palr_android;
 
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +28,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -74,6 +81,10 @@ public class ConversationViewActivity extends AppCompatActivity {
         assert (messageContentInput != null);
         assert (recyclerView != null);
         assert (scrollView != null);
+
+
+        setupActionBar();
+
         setupMessageBtn();
         setupRecyclerView();
 
@@ -98,6 +109,38 @@ public class ConversationViewActivity extends AppCompatActivity {
         mSocket.off(Socket.EVENT_CONNECT_ERROR, onConnectError);
         mSocket.off(Socket.EVENT_CONNECT_TIMEOUT, onConnectError);
         mSocket.off("message", onNewMessage);
+    }
+
+    private void setupActionBar() {
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.conversation_view_toolbar);
+
+        toolbar.setTitle(conversation.getPal().getName());
+        Picasso.with(this)
+                .load(conversation.getPal().getImageUrl())
+                .placeholder(this.getResources().getDrawable(R.drawable.default_profile_picture))
+                .error(this.getResources().getDrawable(R.drawable.default_profile_picture))
+                .resize(130, 130)
+                .into(new Target() {
+                    @Override
+                    public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                        RoundedBitmapDrawable imageDrawable = RoundedBitmapDrawableFactory.create(getResources(), bitmap);
+                        imageDrawable.setCircular(true);
+                        imageDrawable.setCornerRadius(Math.max(bitmap.getWidth(), bitmap.getHeight()) / 2.0f);
+                        toolbar.setLogo(imageDrawable);
+                    }
+                    @Override
+                    public void onBitmapFailed(Drawable errorDrawable)
+                    {
+                        toolbar.setLogo(errorDrawable);
+                    }
+
+                    @Override
+                    public void onPrepareLoad(Drawable placeHolderDrawable)
+                    {
+                        toolbar.setLogo(placeHolderDrawable);
+                    }
+                });
+        setSupportActionBar(toolbar);
     }
 
     private void setupMessageBtn() {

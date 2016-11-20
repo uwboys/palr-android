@@ -5,7 +5,7 @@
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/grey400</item>
+        <item name="colorAccent">@color/secondaryLighter</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
@@ -16,6 +16,15 @@
 
     <style name="AppTheme.ConversationListActionBar" parent="AppTheme">
         <item name="android:textColorPrimary">@color/grey50</item>
+    </style>
+
+    <style name="AppTheme.ConversationViewActionBar" parent="AppTheme">
+        <item name="android:textColorPrimary">@color/grey50</item>
+        <item name="android:background">@color/colorPrimary</item>
+    </style>
+
+    <style name="AppTheme.Input" parent="AppTheme">
+        <item name="android:backgroundTint">@color/secondaryLighter</item>
     </style>
 
 </resources>
