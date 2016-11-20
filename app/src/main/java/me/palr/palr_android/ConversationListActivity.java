@@ -136,6 +136,7 @@ public class ConversationListActivity extends AppCompatActivity {
             final int index = position;
             holder.mItem = this.conversations.get(position);
             holder.palName.setText(holder.mItem.getPal().getName());
+            holder.lastMessageDate.setText(holder.mItem.getLastMessageDate());
 
             Picasso.with(ConversationListActivity.this)
                     .load(R.drawable.default_profile_picture)
@@ -161,6 +162,7 @@ public class ConversationListActivity extends AppCompatActivity {
             public final RelativeLayout cardView;
             public final CircleImageView palImage;
             public final TextView palName;
+            public final TextView lastMessageDate;
             public Conversation mItem;
 
             public ViewHolder(View view) {
@@ -168,6 +170,7 @@ public class ConversationListActivity extends AppCompatActivity {
                 cardView = (RelativeLayout) view.findViewById(R.id.conversation_card);
                 palImage = (CircleImageView) view.findViewById(R.id.conversation_card_image);
                 palName = (TextView) view.findViewById(R.id.conversation_card_name);
+                lastMessageDate = (TextView) view.findViewById(R.id.conversation_card_date);
             }
         }
     }
