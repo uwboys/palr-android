@@ -26,6 +26,7 @@ import retrofit2.Response;
  * Created by maazali on 2016-11-16.
  */
 public class ProfileEditActivity extends AppCompatActivity {
+    static final int REQUEST_UPLOAD = 1;
     CircleImageView imageDisplay;
     EditText nameInput;
     EditText emailInput;
@@ -143,6 +144,28 @@ public class ProfileEditActivity extends AppCompatActivity {
 
 
     private void setupImageView() {
+        showImage();
+
+        imageDisplay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ProfileEditActivity.this, ImagePickerActivity.class);
+                ProfileEditActivity.this.startActivityForResult(intent, REQUEST_UPLOAD);
+            }
+        });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_UPLOAD && resultCode == RESULT_OK) {
+            // Reload the image, to get the new image!
+            showImage();
+            didChange = true;
+        }
+    }
+
+
+    private void showImage() {
         PalrApplication app = (PalrApplication) getApplication();
         User curUser = app.getCurrentUser();
         Picasso.with(this)
@@ -151,13 +174,6 @@ public class ProfileEditActivity extends AppCompatActivity {
                 .error(this.getResources().getDrawable(R.drawable.default_profile_picture))
                 .into(imageDisplay);
 
-        imageDisplay.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(ProfileEditActivity.this, ImagePickerActivity.class);
-                ProfileEditActivity.this.startActivity(intent);
-            }
-        });
     }
 
     private void setupUpdateButton() {
