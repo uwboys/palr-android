@@ -45,4 +45,14 @@
         android:padding="15dp"
         android:textSize="15dp"
         android:layout_marginTop="40dp"/>
+
+    <ProgressBar
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/signin_progressbar"
+        android:visibility="invisible"
+        android:layout_gravity="center_horizontal" />
+
+
 </LinearLayout>

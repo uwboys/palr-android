@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 
@@ -28,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
 
     EditText signInEmail;
     EditText signInPass;
+    ProgressBar signInProgressBar;
 
     EditText registerName;
     EditText registerEmail;
@@ -95,8 +97,10 @@ public class MainActivity extends AppCompatActivity {
 
                 signInEmail = (EditText)findViewById(R.id.signin_input_email);
                 signInPass = (EditText)findViewById(R.id.signin_input_password);
+                signInProgressBar = (ProgressBar)findViewById(R.id.signin_progressbar);
                 assert (signInEmail != null);
                 assert (signInPass != null);
+                assert (signInProgressBar != null);
 
                 MainActivity.this.curView = "SIGNIN";
             }
@@ -195,9 +199,12 @@ public class MainActivity extends AppCompatActivity {
 
         Call<Token> createLoginReq = service.login(payload);
 
+        signInProgressBar.setVisibility(ProgressBar.VISIBLE);
+
         createLoginReq.enqueue(new Callback<Token>() {
             @Override
             public void onResponse(Call<Token> call, Response<Token> response) {
+                signInProgressBar.setVisibility(ProgressBar.INVISIBLE);
 
                 if (response.body() == null) {
                     if (response.raw().code() == 401) {
@@ -213,6 +220,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<Token> call, Throwable t) {
+                signInProgressBar.setVisibility(ProgressBar.INVISIBLE);
                 Toast.makeText(getApplicationContext(), "Login failed", Toast.LENGTH_LONG).show();
             }
         });
