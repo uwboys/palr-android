@@ -8,7 +8,7 @@ public class User {
     String name;
     String email;
     String gender;
-    String location;
+    String country;
     String password;
     Integer age;
     boolean inMatchProcess;
@@ -59,12 +59,12 @@ public class User {
         this.gender = gender;
     }
 
-    public String getLocation() {
-        return location;
+    public String getCountry() {
+        return country;
     }
 
-    public void setLocation(String location) {
-        this.location = location;
+    public void setCountry(String location) {
+        this.country= location;
     }
 
     public String getPassword() {
