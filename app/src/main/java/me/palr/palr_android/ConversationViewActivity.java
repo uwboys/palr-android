@@ -182,7 +182,7 @@ public class ConversationViewActivity extends AppCompatActivity {
         APIService service = app.getAPIService();
 
         Map<String, String> payload = new HashMap<>();
-        payload.put("conversationDataId", conversation.getConversationDataId());
+        payload.put("conversationId", conversation.getId());
 
         Call<String> createPermReq = service.requestPermanentMatch(payload);
 
