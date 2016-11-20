@@ -1,6 +1,7 @@
 package me.palr.palr_android.api;
 
 import java.util.List;
+import java.util.Map;
 
 import me.palr.palr_android.models.Conversation;
 import me.palr.palr_android.models.LoginPayload;
@@ -43,4 +44,7 @@ public interface APIService {
 
     @PUT("users/me")
     Call<User> updateUser(@Body User user);
+
+    @POST("/match/permanent")
+    Call<String> requestPermanentMatch(@Body Map<String, String> payload);
 }

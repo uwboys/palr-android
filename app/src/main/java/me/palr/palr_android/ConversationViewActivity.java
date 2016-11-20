@@ -16,6 +16,8 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -27,12 +29,16 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.joanzapata.iconify.IconDrawable;
+import com.joanzapata.iconify.fonts.MaterialIcons;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.socket.client.IO;
@@ -83,7 +89,7 @@ public class ConversationViewActivity extends AppCompatActivity {
         assert (scrollView != null);
 
 
-        setupActionBar();
+        setupAppbar();
 
         setupMessageBtn();
         setupRecyclerView();
@@ -111,9 +117,39 @@ public class ConversationViewActivity extends AppCompatActivity {
         mSocket.off("message", onNewMessage);
     }
 
-    private void setupActionBar() {
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.conversation_view_actions, menu);
+        MenuItem myProfile = menu.findItem(R.id.action_permanent_match);
+        myProfile.setIcon(
+                new IconDrawable(this, MaterialIcons.md_favorite_border)
+                        .colorRes(R.color.grey50)
+                        .actionBarSize()
+        );
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_permanent_match:
+                makePermanentMatchRequest();
+                return true;
+            default:
+                // If we got here, the user's action was not recognized.
+                // Invoke the superclass to handle it.
+                return super.onOptionsItemSelected(item);
+
+        }
+    }
+
+
+    private void setupAppbar() {
+        Toolbar toolbar = (Toolbar) findViewById(R.id.conversation_view_appbar);
+        setSupportActionBar(toolbar);
         setTitle(conversation.getPal().getName());
     }
+
 
     private void setupMessageBtn() {
         AppCompatButton messageSendBtn = (AppCompatButton) findViewById(R.id.message_send_btn);
@@ -139,6 +175,33 @@ public class ConversationViewActivity extends AppCompatActivity {
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         scrollToBottom();
+    }
+
+    private void makePermanentMatchRequest() {
+        final PalrApplication app = (PalrApplication) getApplication();
+        APIService service = app.getAPIService();
+
+        Map<String, String> payload = new HashMap<>();
+        payload.put("conversationDataId", conversation.getConversationDataId());
+
+        Call<String> createPermReq = service.requestPermanentMatch(payload);
+
+        createPermReq.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+
+                if (response.raw().code() != 200) {
+                    Toast.makeText(getApplicationContext(), "Something went wrong, make permanent request unsuccessful!", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getApplicationContext(), "Make permanent request sent!", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                Toast.makeText(getApplicationContext(), "Something went wrong, make permanent request unsuccessful!", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void makeMessageCreateRequest(Message message) {
