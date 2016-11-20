@@ -1,5 +1,6 @@
 package me.palr.palr_android;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
@@ -11,6 +12,9 @@ import android.widget.EditText;
 import android.widget.MultiAutoCompleteTextView;
 import android.widget.Toast;
 
+import com.squareup.picasso.Picasso;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 import me.palr.palr_android.api.APIService;
 import me.palr.palr_android.models.Message;
 import me.palr.palr_android.models.User;
@@ -22,7 +26,7 @@ import retrofit2.Response;
  * Created by maazali on 2016-11-16.
  */
 public class ProfileEditActivity extends AppCompatActivity {
-
+    CircleImageView imageDisplay;
     EditText nameInput;
     EditText emailInput;
     EditText passwordInput;
@@ -38,6 +42,7 @@ public class ProfileEditActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile_edit_view);
+        imageDisplay = (CircleImageView) findViewById(R.id.profile_input_image);
         nameInput = (EditText) findViewById(R.id.profile_input_name);
         emailInput = (EditText) findViewById(R.id.profile_input_email);
         passwordInput = (EditText) findViewById(R.id.profile_input_password);
@@ -46,6 +51,7 @@ public class ProfileEditActivity extends AppCompatActivity {
         countryInput = (AutoCompleteTextView) findViewById(R.id.profile_input_country);
         ethnicityInput = (AutoCompleteTextView) findViewById(R.id.profile_input_ethnicity);
 
+        assert (imageDisplay != null);
         assert (nameInput != null);
         assert (emailInput != null);
         assert (passwordInput != null);
@@ -55,6 +61,7 @@ public class ProfileEditActivity extends AppCompatActivity {
         assert (hobbiesInput != null);
 
         setupAutoCompleteViews();
+        setupImageView();
 
         setupUpdateButton();
         addCurrentDataToField();
@@ -134,6 +141,25 @@ public class ProfileEditActivity extends AppCompatActivity {
         });
     }
 
+
+    private void setupImageView() {
+        PalrApplication app = (PalrApplication) getApplication();
+        User curUser = app.getCurrentUser();
+        Picasso.with(this)
+                .load(curUser.getImageUrl())
+                .placeholder(this.getResources().getDrawable(R.drawable.default_profile_picture))
+                .error(this.getResources().getDrawable(R.drawable.default_profile_picture))
+                .into(imageDisplay);
+
+        imageDisplay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ProfileEditActivity.this, ImagePickerActivity.class);
+                ProfileEditActivity.this.startActivity(intent);
+            }
+        });
+    }
+
     private void setupUpdateButton() {
         AppCompatButton saveBtn = (AppCompatButton) findViewById(R.id.profile_save_btn);
 
@@ -142,17 +168,16 @@ public class ProfileEditActivity extends AppCompatActivity {
         saveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                PalrApplication app = (PalrApplication) getApplication();
-                User curUser = app.getCurrentUser();
+            PalrApplication app = (PalrApplication) getApplication();
+            User curUser = app.getCurrentUser();
 
-                updateCurrentUserFields(curUser);
+            updateCurrentUserFields(curUser);
 
-                if (didChange) {
-                    makeUserUpdateRequest(curUser);
-                } else {
-                    Toast.makeText(ProfileEditActivity.this, "No changes made to profile!", Toast.LENGTH_SHORT).show();
-                }
-
+            if (didChange) {
+                makeUserUpdateRequest(curUser);
+            } else {
+                Toast.makeText(ProfileEditActivity.this, "No changes made to profile!", Toast.LENGTH_SHORT).show();
+            }
             }
         });
     }
