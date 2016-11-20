@@ -4,15 +4,19 @@ import android.app.Application;
 import android.content.Intent;
 import android.widget.Toast;
 
+import com.cloudinary.Cloudinary;
 import com.facebook.FacebookSdk;
 import com.facebook.stetho.Stetho;
 import com.facebook.stetho.okhttp3.StethoInterceptor;
 import com.joanzapata.iconify.Iconify;
 import com.joanzapata.iconify.fonts.MaterialModule;
 
+import net.danlew.android.joda.JodaTimeAndroid;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import me.palr.palr_android.api.APIService;
 import me.palr.palr_android.models.Conversation;
@@ -35,12 +39,17 @@ public class PalrApplication extends Application {
     private APIService apiService;
     User currentUser;
     Token currentToken;
+    Cloudinary cloudinary;
 
     List<Conversation> conversations;
 
     public void onCreate() {
         super.onCreate();
+        JodaTimeAndroid.init(this);
+
         Iconify.with(new MaterialModule());
+
+        setupCloudinary();
 
         Stetho.initializeWithDefaults(this);
 
@@ -58,6 +67,15 @@ public class PalrApplication extends Application {
                 .build();
 
         apiService = retrofit.create(APIService.class);
+    }
+
+
+    private void setupCloudinary() {
+        Map config = new HashMap();
+        config.put("cloud_name", getResources().getString(R.string.cloudinary_cloud_name));
+        config.put("api_key", getResources().getString(R.string.cloudinary_api_key));
+        config.put("api_secret", getResources().getString(R.string.cloudinary_api_secret));
+        cloudinary = new Cloudinary(config);
     }
 
     public void logUserIn(Token token, MainActivity activity) {
@@ -133,5 +151,9 @@ public class PalrApplication extends Application {
                 toast.show();
             }
         });
+    }
+
+    public Cloudinary getCloudinary() {
+        return cloudinary;
     }
 }

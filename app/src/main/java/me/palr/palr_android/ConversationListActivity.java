@@ -20,6 +20,14 @@ import com.joanzapata.iconify.IconDrawable;
 import com.joanzapata.iconify.fonts.MaterialIcons;
 import com.squareup.picasso.Picasso;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
+
+import net.danlew.android.joda.DateUtils;
+
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.ISODateTimeFormat;
+
 import java.util.List;
 import de.hdodenhof.circleimageview.CircleImageView;
 import me.palr.palr_android.api.APIService;
@@ -133,9 +141,11 @@ public class ConversationListActivity extends AppCompatActivity {
         @Override
         public void onBindViewHolder(final ViewHolder holder, int position) {
             Context context = ConversationListActivity.this;
+//            DateTimeFormatter fmt = ISODateTimeFormat.dateTime();
             final int index = position;
             holder.mItem = this.conversations.get(position);
             holder.palName.setText(holder.mItem.getPal().getName());
+//            DateTime lastMsgTime = fmt.parseDateTime(holder.mItem.getLastMessageDate());
             holder.lastMessageDate.setText(holder.mItem.getLastMessageDate());
 
             Picasso.with(ConversationListActivity.this)

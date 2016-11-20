@@ -2,4 +2,8 @@
     <string name="app_name">Palr</string>
     <string name="base_url">http://palrserver.azurewebsites.net/</string>
     <string name="websocket_url">http://palrserver.azurewebsites.net/ws</string>
+
+    <string name="cloudinary_cloud_name">palr</string>
+    <string name="cloudinary_api_key">149482256595758</string>
+    <string name="cloudinary_api_secret">YU2qlkERD41tpaUXH_ngVYCv-pU</string>
 </resources>
