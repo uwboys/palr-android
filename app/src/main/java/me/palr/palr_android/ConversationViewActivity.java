@@ -290,7 +290,9 @@ public class ConversationViewActivity extends AppCompatActivity {
             PalrApplication app = (PalrApplication) getApplication();
 
             Picasso.with(ConversationViewActivity.this)
-                    .load(R.drawable.default_profile_picture)
+                    .load(holder.mItem.getCreatedBy().getImageUrl())
+                    .placeholder(R.drawable.default_profile_picture)
+                    .error(R.drawable.default_profile_picture)
                     .into(holder.createdByImage);
 
             if (holder.mItem.getCreatedBy() != null && app.getCurrentUser().getId().equals(holder.mItem.getCreatedBy().getId())) {

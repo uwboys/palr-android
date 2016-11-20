@@ -83,7 +83,7 @@ public class ProfileEditActivity extends AppCompatActivity {
         if (curUser.getEthnicity() != null)
             ethnicityInput.setText(curUser.getEthnicity());
 
-        if (curUser.getHobbies().length > 0) {
+        if (curUser.getHobbies() != null && curUser.getHobbies().length > 0) {
             String[] arr = curUser.getHobbies();
             StringBuilder sb = new StringBuilder();
             for(int i = 0; i < arr.length; i++) {
@@ -173,7 +173,6 @@ public class ProfileEditActivity extends AppCompatActivity {
                 .placeholder(this.getResources().getDrawable(R.drawable.default_profile_picture))
                 .error(this.getResources().getDrawable(R.drawable.default_profile_picture))
                 .into(imageDisplay);
-
     }
 
     private void setupUpdateButton() {
