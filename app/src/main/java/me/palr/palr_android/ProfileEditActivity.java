@@ -170,8 +170,8 @@ public class ProfileEditActivity extends AppCompatActivity {
         User curUser = app.getCurrentUser();
         Picasso.with(this)
                 .load(curUser.getImageUrl())
-                .placeholder(this.getResources().getDrawable(R.drawable.default_profile_picture))
-                .error(this.getResources().getDrawable(R.drawable.default_profile_picture))
+                .placeholder(R.drawable.default_profile_picture)
+                .error(R.drawable.default_profile_picture)
                 .into(imageDisplay);
     }
 

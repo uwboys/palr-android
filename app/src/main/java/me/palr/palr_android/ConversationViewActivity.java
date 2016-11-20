@@ -291,6 +291,7 @@ public class ConversationViewActivity extends AppCompatActivity {
 
             Picasso.with(ConversationViewActivity.this)
                     .load(holder.mItem.getCreatedBy().getImageUrl())
+                    .fit()
                     .placeholder(R.drawable.default_profile_picture)
                     .error(R.drawable.default_profile_picture)
                     .into(holder.createdByImage);

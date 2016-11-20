@@ -146,10 +146,13 @@ public class ConversationListActivity extends AppCompatActivity {
             holder.mItem = this.conversations.get(position);
             holder.palName.setText(holder.mItem.getPal().getName());
 //            DateTime lastMsgTime = fmt.parseDateTime(holder.mItem.getLastMessageDate());
-            holder.lastMessageDate.setText(holder.mItem.getLastMessageDate());
+            holder.lastMessageDate.setText("Last Message: " + holder.mItem.getLastMessageDate());
 
             Picasso.with(ConversationListActivity.this)
-                    .load(R.drawable.default_profile_picture)
+                    .load(holder.mItem.getPal().getImageUrl())
+                    .fit()
+                    .error(R.drawable.default_profile_picture)
+                    .placeholder(R.drawable.default_profile_picture)
                     .into(holder.palImage);
 
             holder.cardView.setOnClickListener(new View.OnClickListener() {
