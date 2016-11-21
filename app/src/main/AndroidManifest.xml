@@ -39,6 +39,12 @@
         </activity>
 
         <activity
+            android:name="me.palr.palr_android.ProfileActivity"
+            android:label="Profile">
+        </activity>
+
+
+        <activity
             android:name="me.palr.palr_android.ImagePickerActivity"
             android:label="Pick image">
         </activity>

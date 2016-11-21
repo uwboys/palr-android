@@ -1,5 +1,6 @@
 package me.palr.palr_android;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
@@ -57,6 +58,8 @@ import retrofit2.Response;
  */
 public class ConversationViewActivity extends AppCompatActivity {
     private Conversation conversation;
+    private int conversationPosition;
+
     private AppCompatButton messageSendBtn;
     private RecyclerView recyclerView;
     private ScrollView scrollView;
@@ -72,13 +75,13 @@ public class ConversationViewActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_conversation_view);
 
-        int position = getIntent().getIntExtra("item_index", 0);
+        conversationPosition = getIntent().getIntExtra("item_index", 0);
         PalrApplication app = (PalrApplication) getApplication();
+        conversation = app.getConversations().get(conversationPosition);
 
         messageList = new ArrayList<Message>();
         adapter = new SimpleItemRecyclerViewAdapter(messageList);
 
-        conversation = app.getConversations().get(position);
         messageSendBtn = (AppCompatButton) findViewById(R.id.message_send_btn);
         messageContentInput = (EditText) findViewById(R.id.message_content_input);
         recyclerView = (RecyclerView) findViewById(R.id.message_list);
@@ -339,9 +342,26 @@ public class ConversationViewActivity extends AppCompatActivity {
 
             if (holder.mItem.getCreatedBy() != null && app.getCurrentUser().getId().equals(holder.mItem.getCreatedBy().getId())) {
                 holder.createdByName.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
-            } else {
+            } else { // Current user is not the creator of message
                 holder.createdByName.setTextColor(getResources().getColor(R.color.grey700));
+                setupImageClick(holder);
             }
+        }
+
+        private void setupImageClick(ViewHolder holder) {
+            if (!conversation.getIsPermanent()) {
+                return;
+            }
+
+            holder.createdByImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Context context = v.getContext();
+                    Intent intent = new Intent(context, ProfileActivity.class);
+                    intent.putExtra("item_index", conversationPosition);
+                    context.startActivity(intent);
+                }
+            });
         }
 
         @Override
@@ -362,6 +382,8 @@ public class ConversationViewActivity extends AppCompatActivity {
                 cardView = (CardView) view.findViewById(R.id.message_card);
                 createdByName  = (TextView) view.findViewById(R.id.message_created_by_name);
                 content = (TextView) view.findViewById(R.id.message_content);
+
+                assert (createdByImage != null);
             }
         }
     }
