@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -16,6 +17,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.joanzapata.iconify.IconDrawable;
 import com.joanzapata.iconify.fonts.MaterialIcons;
 import com.joanzapata.iconify.widget.IconTextView;
@@ -29,10 +33,16 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 
+import java.net.URISyntaxException;
 import java.util.List;
 import de.hdodenhof.circleimageview.CircleImageView;
+import io.socket.client.IO;
+import io.socket.client.Socket;
+import io.socket.emitter.Emitter;
 import me.palr.palr_android.api.APIService;
 import me.palr.palr_android.models.Conversation;
+import me.palr.palr_android.models.Message;
+import me.palr.palr_android.models.Token;
 import me.palr.palr_android.models.User;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -42,11 +52,17 @@ import retrofit2.Response;
  * Created by maazali on 2016-10-15.
  */
 public class ConversationListActivity extends AppCompatActivity {
+
+    Socket mSocket;
+    boolean isConnected = true;
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_conversation_list);
         setupAppbar();
+
+        connectSocket();
     }
 
     @Override
@@ -80,6 +96,21 @@ public class ConversationListActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         makeConversationRequest();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        mSocket.disconnect();
+
+        mSocket.off(Socket.EVENT_CONNECT, onConnect);
+        mSocket.off(Socket.EVENT_DISCONNECT, onDisconnect);
+        mSocket.off(Socket.EVENT_CONNECT_ERROR, onConnectError);
+        mSocket.off(Socket.EVENT_CONNECT_TIMEOUT, onConnectError);
+        mSocket.off("message", onNewMessage);
+        mSocket.off("permanent_match", onPermanentMatch);
+        mSocket.off("delete_conversation", onDeleteConversation);
     }
 
 
@@ -195,5 +226,111 @@ public class ConversationListActivity extends AppCompatActivity {
             }
         }
     }
+
+
+
+    private void connectSocket() {
+        try {
+            mSocket = IO.socket(getResources().getString(R.string.websocket_url));
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
+
+        mSocket.on(Socket.EVENT_CONNECT, onConnect);
+        mSocket.on(Socket.EVENT_DISCONNECT, onDisconnect);
+        mSocket.on(Socket.EVENT_CONNECT_ERROR, onConnectError);
+        mSocket.on(Socket.EVENT_CONNECT_TIMEOUT, onConnectError);
+        mSocket.on("delete_conversation", onDeleteConversation);
+        mSocket.connect();
+    }
+
+    private Emitter.Listener onConnect = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            ConversationListActivity.this.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if(!isConnected) {
+                        isConnected = true;
+                    }
+                    Log.d("DEBUG", "We've connected to the websocket");
+                    Token curToken = ((PalrApplication) getApplication()).getCurrentToken();
+
+                    mSocket.emit("add_client", curToken.getAccessToken());
+                }
+            });
+        }
+    };
+
+    private Emitter.Listener onDisconnect = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            ConversationListActivity.this.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    isConnected = false;
+                    Log.d("DEBUG", "We've disconnected from websocket");
+                }
+            });
+        }
+    };
+
+    private Emitter.Listener onConnectError = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            ConversationListActivity.this.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Log.d("DEBUG", "Websocket errored out");
+                }
+            });
+        }
+    };
+
+    private Emitter.Listener onNewMessage = new Emitter.Listener() {
+        @Override
+        public void call(final Object... args) {
+            ConversationListActivity.this.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Gson gson = new Gson();
+                    JsonParser jsonParser = new JsonParser();
+                    JsonObject gsonMsg = (JsonObject)jsonParser.parse(args[0].toString());
+                    Message newMsg = gson.fromJson(gsonMsg, Message.class);
+                    newMsg.getConversationDataId();
+                    Log.d("DEBUG", "New message with conversationDataId: " + newMsg.getConversationDataId());
+                }
+            });
+        }
+    };
+
+    private Emitter.Listener onPermanentMatch = new Emitter.Listener() {
+        @Override
+        public void call(final Object... args) {
+            ConversationListActivity.this.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Log.d("DEBUG", "Permanently matched!");
+                    makeConversationRequest();
+                }
+            });
+        }
+    };
+
+    private Emitter.Listener onDeleteConversation = new Emitter.Listener() {
+        @Override
+        public void call(final Object... args) {
+            ConversationListActivity.this.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Gson gson = new Gson();
+                    JsonParser jsonParser = new JsonParser();
+                    JsonObject jsonObject = (JsonObject)jsonParser.parse(args[0].toString());
+                    Log.d("DEBUG", "Conversation Deleted!" + jsonObject.toString());
+                    makeConversationRequest();
+                }
+            });
+        }
+    };
 }
 

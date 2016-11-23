@@ -138,7 +138,7 @@ public class PalrApplication extends Application {
                     Intent intent;
                     if (currentUser.isTemporarilyMatched()) {
                         intent = new Intent(activity, ConversationListActivity.class);
-                    } else if (currentUser.isInMatchProcess()) {
+                    } else if (currentUser.isInMatchProcess() && currentUser.isPermanentlyMatched()) {
                         intent = new Intent(activity, ConversationListActivity.class);
                         Toast.makeText(activity, "We are still finding you a temporary match!", Toast.LENGTH_LONG).show();
                     } else {

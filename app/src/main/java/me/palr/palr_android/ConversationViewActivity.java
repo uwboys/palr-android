@@ -118,6 +118,8 @@ public class ConversationViewActivity extends AppCompatActivity {
         mSocket.off(Socket.EVENT_CONNECT_ERROR, onConnectError);
         mSocket.off(Socket.EVENT_CONNECT_TIMEOUT, onConnectError);
         mSocket.off("message", onNewMessage);
+        mSocket.off("permanent_match", onPermanentMatch);
+        mSocket.off("delete_conversation", onDeleteConversation);
     }
 
     @Override
@@ -410,6 +412,8 @@ public class ConversationViewActivity extends AppCompatActivity {
         mSocket.on(Socket.EVENT_CONNECT_ERROR, onConnectError);
         mSocket.on(Socket.EVENT_CONNECT_TIMEOUT, onConnectError);
         mSocket.on("message", onNewMessage);
+        mSocket.on("permanent_match", onPermanentMatch);
+        mSocket.on("delete_conversation", onDeleteConversation);
         mSocket.connect();
     }
 
@@ -467,6 +471,33 @@ public class ConversationViewActivity extends AppCompatActivity {
                     JsonObject gsonMsg = (JsonObject)jsonParser.parse(args[0].toString());
                     Message newMsg = gson.fromJson(gsonMsg, Message.class);
                     addMessage(newMsg);
+                }
+            });
+        }
+    };
+
+    private Emitter.Listener onPermanentMatch = new Emitter.Listener() {
+        @Override
+        public void call(final Object... args) {
+            ConversationViewActivity.this.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Log.d("DEBUG", "Permanently matched!");
+                }
+            });
+        }
+    };
+
+    private Emitter.Listener onDeleteConversation = new Emitter.Listener() {
+        @Override
+        public void call(final Object... args) {
+            ConversationViewActivity.this.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Gson gson = new Gson();
+                    JsonParser jsonParser = new JsonParser();
+                    JsonObject jsonObject = (JsonObject)jsonParser.parse(args[0].toString());
+                    Log.d("DEBUG", "Conversation Deleted!" + jsonObject.toString());
                 }
             });
         }
