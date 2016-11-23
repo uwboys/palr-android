@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Palr</string>
-    <string name="base_url">https://67ebcbee.ngrok.io/</string>
-    <string name="websocket_url">https://67ebcbee.ngrok.io/ws</string>
+    <string name="base_url">https://70a0cb34.ngrok.io/</string>
+    <string name="websocket_url">https://70a0cb34.ngrok.io/ws</string>
 
     <string name="cloudinary_cloud_name">palr</string>
     <string name="cloudinary_api_key">149482256595758</string>

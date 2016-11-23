@@ -243,6 +243,7 @@ public class ConversationListActivity extends AppCompatActivity {
         mSocket.on(Socket.EVENT_CONNECT_TIMEOUT, onConnectError);
         mSocket.on("message", onNewMessage);
         mSocket.on("permanent_match", onPermanentMatch);
+        mSocket.on("temporary_match", onTemporaryMatch);
         mSocket.on("delete_conversation", onDeleteConversation);
         mSocket.connect();
     }
@@ -314,6 +315,19 @@ public class ConversationListActivity extends AppCompatActivity {
                 @Override
                 public void run() {
                     Log.d("DEBUG", "Permanently matched!");
+                    makeConversationRequest();
+                }
+            });
+        }
+    };
+
+    private Emitter.Listener onTemporaryMatch = new Emitter.Listener() {
+        @Override
+        public void call(final Object... args) {
+            ConversationListActivity.this.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Log.d("DEBUG", "Temporary Match happened!");
                     makeConversationRequest();
                 }
             });
