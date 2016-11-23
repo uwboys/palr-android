@@ -46,7 +46,6 @@ public class ConversationListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_conversation_list);
-        makeConversationRequest();
         setupAppbar();
     }
 
@@ -77,6 +76,13 @@ public class ConversationListActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        makeConversationRequest();
+    }
+
+
     private void setupAppbar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.conversation_list_appbar);
         setSupportActionBar(toolbar);
@@ -88,7 +94,6 @@ public class ConversationListActivity extends AppCompatActivity {
         APIService service = app.getAPIService();
 
         Call<List<Conversation>> conversationsReq = service.getConversations();
-
 
         conversationsReq.enqueue(new Callback<List<Conversation>>() {
             @Override
@@ -106,7 +111,6 @@ public class ConversationListActivity extends AppCompatActivity {
                 } else {
                     View recyclerView = findViewById(R.id.conversation_list);
                     assert recyclerView != null;
-                    ((RecyclerView)recyclerView).addItemDecoration(new HorizontalDividerItemDecoration.Builder(ConversationListActivity.this).build());
                     app.setConversations(response.body());
                     setupRecyclerView((RecyclerView)recyclerView, app.getConversations());
                 }
