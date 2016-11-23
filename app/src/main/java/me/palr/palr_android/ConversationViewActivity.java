@@ -71,6 +71,8 @@ public class ConversationViewActivity extends AppCompatActivity {
     private Socket mSocket;
     private Boolean isConnected = true;
 
+    private Menu curMenu;
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_conversation_view);
@@ -113,6 +115,8 @@ public class ConversationViewActivity extends AppCompatActivity {
 
         mSocket.disconnect();
 
+        Log.d("DEBUG", "WE ARE CALLING DISCONNECT (Activity is being destroyed!)");
+
         mSocket.off(Socket.EVENT_CONNECT, onConnect);
         mSocket.off(Socket.EVENT_DISCONNECT, onDisconnect);
         mSocket.off(Socket.EVENT_CONNECT_ERROR, onConnectError);
@@ -124,6 +128,7 @@ public class ConversationViewActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        curMenu = menu;
         getMenuInflater().inflate(R.menu.conversation_view_actions, menu);
         MenuItem myProfile = menu.findItem(R.id.action_permanent_match);
         MaterialIcons icon = MaterialIcons.md_favorite_border;
@@ -402,7 +407,11 @@ public class ConversationViewActivity extends AppCompatActivity {
 
     private void connectSocket() {
         try {
-            mSocket = IO.socket(getResources().getString(R.string.websocket_url));
+            IO.Options opts = new IO.Options();
+            opts.forceNew = true;
+            opts.reconnection = false;
+
+            mSocket = IO.socket(getResources().getString(R.string.websocket_url), opts);
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }
@@ -483,6 +492,15 @@ public class ConversationViewActivity extends AppCompatActivity {
                 @Override
                 public void run() {
                     Log.d("DEBUG", "Permanently matched!");
+                    MenuItem myProfile = curMenu.findItem(R.id.action_permanent_match);
+                    MaterialIcons icon = MaterialIcons.md_favorite;
+                    myProfile.setIcon(
+                            new IconDrawable(ConversationViewActivity.this, MaterialIcons.md_favorite)
+                                    .colorRes(R.color.grey50)
+                                    .actionBarSize()
+                    );
+
+                    Toast.makeText(ConversationViewActivity.this, "You've been permanently matched!", Toast.LENGTH_LONG).show();
                 }
             });
         }

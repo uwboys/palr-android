@@ -61,7 +61,6 @@ public class ConversationListActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_conversation_list);
         setupAppbar();
-
         connectSocket();
     }
 
@@ -103,6 +102,8 @@ public class ConversationListActivity extends AppCompatActivity {
         super.onDestroy();
 
         mSocket.disconnect();
+
+        Log.d("DEBUG", "WE ARE CALLING DISCONNECT (Activity is being destroyed!)");
 
         mSocket.off(Socket.EVENT_CONNECT, onConnect);
         mSocket.off(Socket.EVENT_DISCONNECT, onDisconnect);
@@ -240,6 +241,8 @@ public class ConversationListActivity extends AppCompatActivity {
         mSocket.on(Socket.EVENT_DISCONNECT, onDisconnect);
         mSocket.on(Socket.EVENT_CONNECT_ERROR, onConnectError);
         mSocket.on(Socket.EVENT_CONNECT_TIMEOUT, onConnectError);
+        mSocket.on("message", onNewMessage);
+        mSocket.on("permanent_match", onPermanentMatch);
         mSocket.on("delete_conversation", onDeleteConversation);
         mSocket.connect();
     }
