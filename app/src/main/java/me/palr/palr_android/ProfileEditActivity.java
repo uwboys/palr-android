@@ -32,7 +32,6 @@ public class ProfileEditActivity extends AppCompatActivity {
     CircleImageView imageDisplay;
     EditText nameInput;
     EditText emailInput;
-    EditText passwordInput;
     EditText ageInput;
     EditText hobbiesInput;
 
@@ -52,7 +51,6 @@ public class ProfileEditActivity extends AppCompatActivity {
         imageDisplay = (CircleImageView) findViewById(R.id.profile_input_image);
         nameInput = (EditText) findViewById(R.id.profile_input_name);
         emailInput = (EditText) findViewById(R.id.profile_input_email);
-        passwordInput = (EditText) findViewById(R.id.profile_input_password);
         ageInput = (EditText) findViewById(R.id.profile_input_age);
         hobbiesInput = (EditText) findViewById(R.id.profile_input_hobbies);
         countryInput = (AutoCompleteTextView) findViewById(R.id.profile_input_country);
@@ -64,7 +62,6 @@ public class ProfileEditActivity extends AppCompatActivity {
         assert (imageDisplay != null);
         assert (nameInput != null);
         assert (emailInput != null);
-        assert (passwordInput != null);
         assert (ageInput != null);
         assert (countryInput != null);
         assert (ethnicityInput != null);
@@ -239,6 +236,12 @@ public class ProfileEditActivity extends AppCompatActivity {
     }
 
     private void updateCurrentUserFields(User curUser) {
+        String email = emailInput.getText().toString();
+        if (!email.equals("")) {
+            curUser.setEmail(email);
+            didChange = true;
+        }
+
         Integer age = Integer.parseInt(ageInput.getText().toString().equals("") ? "0" : ageInput.getText().toString());
 
         if (!age.equals(curUser.getAge()) && age > 0) {
