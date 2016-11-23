@@ -10,6 +10,8 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.MultiAutoCompleteTextView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
@@ -37,6 +39,10 @@ public class ProfileEditActivity extends AppCompatActivity {
     AutoCompleteTextView countryInput;
     AutoCompleteTextView ethnicityInput;
 
+    RadioGroup genderInput;
+    RadioButton genderInputMale;
+    RadioButton genderInputFemale;
+
     boolean didChange = false;
 
     @Override
@@ -51,6 +57,9 @@ public class ProfileEditActivity extends AppCompatActivity {
         hobbiesInput = (EditText) findViewById(R.id.profile_input_hobbies);
         countryInput = (AutoCompleteTextView) findViewById(R.id.profile_input_country);
         ethnicityInput = (AutoCompleteTextView) findViewById(R.id.profile_input_ethnicity);
+        genderInput = (RadioGroup) findViewById(R.id.profile_input_gender);
+        genderInputFemale = (RadioButton) findViewById((R.id.profile_input_female));
+        genderInputMale = (RadioButton) findViewById((R.id.profile_input_male));
 
         assert (imageDisplay != null);
         assert (nameInput != null);
@@ -60,6 +69,9 @@ public class ProfileEditActivity extends AppCompatActivity {
         assert (countryInput != null);
         assert (ethnicityInput != null);
         assert (hobbiesInput != null);
+        assert (genderInput != null);
+        assert (genderInputFemale != null);
+        assert (genderInputMale != null);
 
         setupAutoCompleteViews();
         setupImageView();
@@ -94,6 +106,13 @@ public class ProfileEditActivity extends AppCompatActivity {
             hobbiesInput.setText(sb.toString());
         }
 
+        if (curUser.getGender() != null && !curUser.getGender().equals("")) {
+            if (curUser.getGender().equals("male")) {
+                genderInputMale.setChecked(true);
+            } else {
+                genderInputFemale.setChecked(true);
+            }
+        }
     }
 
     private void setupAutoCompleteViews() {
@@ -161,6 +180,28 @@ public class ProfileEditActivity extends AppCompatActivity {
             // Reload the image, to get the new image!
             showImage();
             didChange = true;
+        }
+    }
+
+    public void onRadioButtonClicked(View view) {
+        // Is the button now checked?
+        PalrApplication app = (PalrApplication) getApplication();
+        User curUser = app.getCurrentUser();
+
+        boolean checked = ((RadioButton) view).isChecked();
+
+        // Check which radio button was clicked
+        switch(view.getId()) {
+            case R.id.profile_input_male:
+                if (checked)
+                    curUser.setGender("male");
+                    didChange = true;
+                    break;
+            case R.id.profile_input_female:
+                if (checked)
+                    curUser.setGender("female");
+                    didChange = true;
+                    break;
         }
     }
 

@@ -18,6 +18,7 @@ public class ProfileActivity extends Activity {
 
     CircleImageView imageDisplay;
     TextView nameDisplay;
+    TextView genderDisplay;
     TextView ageDisplay;
     TextView countryDisplay;
     TextView ethnicityDisplay;
@@ -34,6 +35,7 @@ public class ProfileActivity extends Activity {
 
         imageDisplay = (CircleImageView) findViewById(R.id.profile_display_image);
         nameDisplay = (TextView) findViewById(R.id.profile_display_name);
+        genderDisplay = (TextView) findViewById((R.id.profile_display_gender));
         ageDisplay = (TextView) findViewById(R.id.profile_display_age);
         countryDisplay = (TextView) findViewById(R.id.profile_display_country);
         ethnicityDisplay = (TextView) findViewById(R.id.profile_display_ethnicity);
@@ -41,12 +43,11 @@ public class ProfileActivity extends Activity {
 
         assert(imageDisplay != null);
         assert(nameDisplay != null);
+        assert(genderDisplay != null);
         assert(ageDisplay != null);
         assert(countryDisplay != null);
         assert(ethnicityDisplay != null);
         assert(hobbiesDisplay != null);
-
-        setTitle(conversation.getPal().getName());
 
         displayUserDetails();
     }
@@ -60,6 +61,9 @@ public class ProfileActivity extends Activity {
                 .into(imageDisplay);
 
         nameDisplay.setText(pal.getName());
+
+        if (pal.getGender() != null)
+            genderDisplay.setText(pal.getGender());
 
         if (pal.getAge() != null)
             ageDisplay.setText(String.valueOf(pal.getAge()));
