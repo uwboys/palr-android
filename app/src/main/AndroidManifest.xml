@@ -35,18 +35,21 @@
 
         <activity
             android:name="me.palr.palr_android.ProfileEditActivity"
-            android:label="Edit Profile">
+            android:label="Edit Profile"
+            android:parentActivityName="me.palr.palr_android.ConversationListActivity">
         </activity>
 
         <activity
             android:name="me.palr.palr_android.ProfileActivity"
-            android:label="Profile">
+            android:label="Profile"
+            android:parentActivityName="me.palr.palr_android.ConversationViewActivity">
         </activity>
 
 
         <activity
             android:name="me.palr.palr_android.ImagePickerActivity"
-            android:label="Pick image">
+            android:label="Pick image"
+            android:parentActivityName="me.palr.palr_android.ProfileEditActivity">
         </activity>
 
         <activity
